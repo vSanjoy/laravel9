@@ -1,75 +1,99 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="{{ app()->getLocale() }}">
+<html dir="ltr" lang="{{ app()->getLocale() }}" class="light-style customizer-hide">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Administrator :: @if($title){{$title}} @else {{ getAppName() }} @endif</title>
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon.png') }}"/>
+    <link rel="icon" type="image/x-icon" sizes="16x16" href="{{ asset('images/admin/favicon/favicon.ico') }}" />
+    <title>Administrator :: @if ($title) {{ $title }} @else {{ getAppName() }} @endif</title>
 
-    @if (Route::currentRouteName() == 'admin.dashboard')
-    <link href="{{ asset('css/admin/plugins/c3/c3.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/admin/plugins/chartist/dist/chartist.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/admin/plugins/jvector/jquery-jvectormap-2.0.2.css') }}" rel="stylesheet">
-    @endif
-    
-    <!-- Custom CSS -->
-    <link href="{{ asset('css/admin/dist/style.css') }}" rel="stylesheet">
-    <!-- Font Awesome -->
-    {{-- <link href="{{ asset('css/admin/plugins/fontawesome/css/font-awesome.min.css') }}" rel="stylesheet"> --}}
-    @if (strpos(Route::currentRouteName(), '.gallery') !== false)
-    <!-- Ekko Lightbox -->
-    <link rel="stylesheet" href="{{ asset('css/admin/plugins/ekko-lightbox/ekko-lightbox.css') }}">
-    @endif
-    <!-- Tooltip -->
-    <link href="{{ asset('css/admin/plugins/tooltip/microtip.min.css') }}" rel="stylesheet">
-    @if (strpos(Route::currentRouteName(), '.list') !== false)
-    <!-- DataTables -->
-    <link href="{{ asset('css/admin/plugins/datatables.net-bs4/dataTables.bootstrap4.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/admin/plugins/datatables-responsive/responsive.bootstrap4.min.css') }}" rel="stylesheet">
-    @endif
-    <!-- Select2 -->
-    <link rel="stylesheet" href="{{ asset('css/admin/plugins/select2/select2.min.css') }}">
-    <!-- Sweetalert -->
-    <link href="{{ asset('css/admin/plugins/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
-    <!-- Fancybox -->
-    <link href="{{ asset('css/admin/plugins/fancybox/jquery.fancybox.min.css') }}" rel="stylesheet">
-    <!-- jQuery -->
-    <script src="{{ asset('js/admin/dist/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('js/admin/jquery.validate.min.js') }}"></script>
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" />
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="{{ asset('css/admin/vendor/fonts/boxicons.css') }}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{{ asset('css/admin/vendor/css/core.css') }}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ asset('css/admin/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{{ asset('css/admin/demo.css') }}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{{ asset('css/admin/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+
+    <link rel="stylesheet" href="{{ asset('css/admin/vendor/libs/apex-charts/apex-charts.css') }}" />
+
+    <!-- Page CSS -->
+    <!-- Page -->
+    <link rel="stylesheet" href="{{ asset('css/admin/vendor/css/pages/page-auth.css') }}" />
+    <!-- Helpers -->
+    <script src="{{ asset('js/admin/vendor/js/helpers.js') }}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{{ asset('js/admin/config.js') }}"></script>
+
     <!-- Toastr css -->
-    <link href="{{ asset('css/admin/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/admin/vendor/libs/toastr/toastr.min.css') }}" rel="stylesheet">
+
     <!-- Development css -->
     <link href="{{ asset('css/admin/development.css') }}" rel="stylesheet">
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
 </head>
 
 <body>
     
     @include('admin.includes.notification')
 
-    <!-- ============================================================== -->
-    <!-- Preloader - style you can find in spinners.css -->
-    <!-- ============================================================== -->
+    <!-- Preloader -->
     <div class="preloader">
         <div class="lds-ripple">
             <div class="lds-pos"></div>
             <div class="lds-pos"></div>
         </div>
     </div>
-    <!-- ============================================================== -->
+
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+            @include('admin.includes.navigation')
+            <!-- / Menu -->
+
+            <!-- Layout container -->
+            <div class="layout-page">
+                <!-- Navbar -->
+                @include('admin.includes.header')
+                <!-- / Navbar -->
+
+                <!-- Content wrapper -->
+                <div class="content-wrapper">
+                    <!-- Content -->
+                    @yield('content')
+                    <!-- / Content -->
+
+                    <!-- Footer -->
+                    @include('admin.includes.footer')
+                    <!-- / Footer -->
+
+                    <div class="content-backdrop fade"></div>
+                </div>
+                <!-- Content wrapper -->
+            </div>
+            <!-- / Layout page -->
+        </div>
+
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+    
+
+    {{-- <!-- ============================================================== -->
     <!-- Main wrapper - style you can find in pages.scss -->
     <!-- ============================================================== -->
     <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
@@ -123,193 +147,59 @@
     </div>
     <!-- ============================================================== -->
     <!-- End Wrapper -->
-    <!-- ============================================================== -->
+    <!-- ============================================================== --> --}}
     
     <!-- ============================================================== -->
-    <!-- All Jquery -->
+    <!-- All Required js -->
     <!-- ============================================================== -->
-    <!-- Bootstrap tether Core JavaScript -->
-    <script src="{{ asset('js/admin/plugins/popper.js/dist/umd/popper.min.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-    <!-- ============================================================== -->
-    <!-- This page plugin js -->
-    <!-- ============================================================== -->
-    <script type="text/javascript">
-        $(".preloader").fadeOut();
-    </script>
-    <!-- apps -->
-    <script src="{{ asset('js/admin/dist/app-style-switcher.js') }}"></script>
-    <script src="{{ asset('js/admin/dist/feather.min.js') }}"></script>
-    <!-- slimscrollbar scrollbar JavaScript -->
-    <script src="{{ asset('js/admin/plugins/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/sparkline/sparkline.js') }}"></script>
-    <!--Wave Effects -->
-    <!-- themejs -->
-    <!--Menu sidebar -->
-    <script src="{{ asset('js/admin/dist/sidebarmenu.js') }}"></script>
-    <!--Custom JavaScript -->
-    <script src="{{ asset('js/admin/dist/custom.min.js') }}"></script>
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="{{ asset('js/admin/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="{{ asset('js/admin/vendor/libs/popper/popper.js') }}"></script>
+    <script src="{{ asset('js/admin/vendor/js/bootstrap.js') }}"></script>
+    <script src="{{ asset('js/admin/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    <script src="{{ asset('js/admin/vendor/js/menu.js') }}"></script>
+    <!-- endbuild -->
 
-    @if (Route::currentRouteName() == 'admin.dashboard')
-    <!--Custom JavaScript -->
-    <script src="{{ asset('js/admin/plugins/c3/d3.min.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/c3/c3.min.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/chartist/dist/chartist.min.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/jvector/jquery-jvectormap-2.0.2.min.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/jvector/jquery-jvectormap-world-mill-en.js') }}"></script>
-    {{-- <script src="{{ asset('js/admin/dist/pages/dashboards/dashboard1.min.js') }}"></script> --}}
-    <!-- Chart JS -->
-    {{-- <script src="{{ asset('js/admin/dist/pages/chartjs/chartjs.init.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/chart.js/dist/Chart.min.js') }}"></script> --}}
-    <!--Morris JavaScript -->
-    {{-- <script src="{{ asset('js/admin/plugins/raphael/raphael.min.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/morris.js/morris.min.js') }}"></script> --}}
-    {{-- <script src="{{ asset('js/admin/dist/pages/morris/morris-data.js') }}"></script> --}}
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.0/chart.min.js"></script>
-    @endif
-
-    <!-- Select2 -->
-    <script src="{{ asset('js/admin/plugins/select2/select2.full.min.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/moment/moment.min.js') }}"></script>
-    <!-- date-range-picker -->
-    <link rel="stylesheet" href="{{asset('css/admin/plugins/bootstrap-daterangepicker/daterangepicker.css')}}">
-    <script src="{{ asset('js/admin/plugins/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
-    <!-- material date time picker -->
-    <link rel="stylesheet" href="{{asset('css/admin/plugins/material-datetimepicker/bootstrap-material-datetimepicker.css')}}">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="{{ asset('js/admin/plugins/material-datetimepicker/bootstrap-material-datetimepicker.js') }}"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-        $('#end_date_time').bootstrapMaterialDatePicker({
-            weekStart: 0,
-            format: 'YYYY-MM-DD HH:mm',
-        });
-        $('#start_date_time').bootstrapMaterialDatePicker({
-            weekStart: 0,
-            format: 'YYYY-MM-DD HH:mm',
-            shortTime : true
-        }).on('change', function(e, date) {
-            $('#end_date_time').bootstrapMaterialDatePicker('setMinDate', date);
-        });
-    });
-    </script>
-
-    @if (strpos(Route::currentRouteName(), '.gallery') !== false)
-    <!-- Ekko Lightbox -->
-    <script src="{{ asset('js/admin/plugins/ekko-lightbox/ekko-lightbox.min.js') }}"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
-            event.preventDefault();
-            $(this).ekkoLightbox({
-                alwaysShowClose: true
-            });
-        });
-    });
-    </script>
-    @endif
-
-    @if (strpos(Route::currentRouteName(), '.list') !== false)        
-    <!-- DataTables -->
-    <script src="{{ asset('js/admin/plugins/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('js/admin/dist/pages/datatable/datatable-basic.init.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/datatables-responsive/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('js/admin/plugins/datatables-responsive/responsive.bootstrap4.min.js') }}"></script>
-    <script type="text/javascript">
-        $(function () {
-            $('#responsive-table').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        });
-    </script>
-    @endif
-    
-    @if (strpos(Route::currentRouteName(), '.add') !== false || strpos(Route::currentRouteName(), '.edit') !== false || strpos(Route::currentRouteName(), '.profile') !== false)
-    <script src="{{ asset('js/admin/plugins/ckeditor/ckeditor.js') }}"></script>
-    <script type="text/javascript">
-        $(function () {
-            try {
-                if ($('#description').length) {
-                    CKEDITOR.replace('description', {
-                        filebrowserUploadUrl: "{{route('admin.ckeditor-upload', ['_token' => csrf_token() ])}}",
-                        filebrowserUploadMethod: 'form',
-                        allowedContent: true
-                    });
-                }
-                if ($('#description_popup_top').length) {
-                    CKEDITOR.replace('description_popup_top', {
-                        filebrowserUploadUrl: "{{route('admin.ckeditor-upload', ['_token' => csrf_token() ])}}",
-                        filebrowserUploadMethod: 'form',
-                        allowedContent: true
-                    });
-                }
-                if ($('#description_popup_bottom').length) {
-                    CKEDITOR.replace('description_popup_bottom', {
-                        filebrowserUploadUrl: "{{route('admin.ckeditor-upload', ['_token' => csrf_token() ])}}",
-                        filebrowserUploadMethod: 'form',
-                        allowedContent: true
-                    });
-                }
-                if ($('#description2').length) {
-                    CKEDITOR.replace('description2', {
-                        filebrowserUploadUrl: "{{route('admin.ckeditor-upload', ['_token' => csrf_token() ])}}",
-                        filebrowserUploadMethod: 'form',
-                        allowedContent: true
-                    });
-                }
-                if ($('#other_description').length) {
-                    CKEDITOR.replace('other_description', {
-                        filebrowserUploadUrl: "{{route('admin.ckeditor-upload', ['_token' => csrf_token() ])}}",
-                        filebrowserUploadMethod: 'form',
-                        allowedContent: true
-                    });
-                }
-            } catch {
-
-            }
-        });
-    </script>
-    <!-- Cropper -->
-    <link href="{{ asset('css/admin/plugins/croppie/croppie.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('js/admin/plugins/croppie/croppie.js') }}"></script>
-    @endif
-    <!-- Sweetalert -->
-    <script src="{{ asset('js/admin/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
-    <!-- Fancybox -->
-    <script src="{{ asset('js/admin/plugins/fancybox/jquery.fancybox.min.js') }}"></script>
-    <!-- Toastr js & rendering -->
-    <script src="{{ asset('js/admin/plugins/toastr/toastr.min.js') }}"></script>
-    @toastr_render
+    <!-- jQuery -->
+    <script src="{{ asset('js/admin/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('js/admin/development.js') }}"></script>
-    <script type="text/javascript">    
-    $(function () {
-        $('.select2').select2();
-    });
+
+    <!-- Vendors JS -->
+    <script src="{{ asset('js/admin/vendor/libs/apex-charts/apexcharts.js') }}"></script>
+
+    <!-- Main JS -->
+    <script src="{{ asset('js/admin/main.js') }}"></script>
+
+    <!-- Page JS -->
+    <script src="{{ asset('js/admin/dashboards-analytics.js') }}"></script>
+    
+    <!-- Preloader -->
+    <script type="text/javascript">
+    $(".preloader").fadeOut();
     </script>
 
-    <!-- Selectpicker -->
-    <link rel="stylesheet" href="{{asset('css/admin/plugins/selectpicker/bootstrap-select.css')}}">
-	<script src="{{asset('js/admin/plugins/selectpicker/bootstrap-select.js')}}"></script>
-    <script type="text/javascript">    
-    $(function () {
-        $('.selectpicker').selectpicker({
-            // maxOptions:2,
-            // actionsBox: false,
-        });
-    });    
+    <!-- Toastr js & rendering -->
+    <script src="{{ asset('js/admin/vendor/libs/toastr/toastr.min.js') }}"></script>
+    <script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
     </script>
-
-    @if (strpos(Route::currentRouteName(), '.sort') !== false || strpos(Route::currentRouteName(), '.details') !== false)
-    <link href="{{ asset('css/admin/plugins/nestable/nestable.css') }}" rel="stylesheet">
-    <script src="{{ asset('js/admin/plugins/nestable/jquery.nestable.js') }}"></script>
-    @endif
 
     @stack('scripts')
 

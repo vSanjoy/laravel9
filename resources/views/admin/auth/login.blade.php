@@ -38,7 +38,7 @@
                 'class' => 'mb-3',
                 'route' => [$routePrefix.'.'.$as.'.login'],
                 'name'  => 'adminLoginForm',
-                'id'    => 'adminLoginForm',
+                'id'    => 'adminLoginForm1',
                 'files' => true,
                 'novalidate' => true]) }}
                 <div class="mb-3">

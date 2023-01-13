@@ -430,6 +430,7 @@ return [
     'error_page_not_found'                          => 'Page Not Found',
     'error_401'                                     => 'Oops. Unauthorized access.',
     'error_404'                                     => 'Oops. This page has gone missing.',
+    'error_419'                                     => 'Page Expired',
     'error_parent_category_not_inactive'            => 'You cannot inactive/delete this category',
     'error_session_length'                          => 'Please enter session length.',
     'error_result'                                  => 'Please enter result.',
@@ -452,6 +453,7 @@ return [
     'error_advertiser_id'                           => 'Please select advertiser.',
     'error_event_category_id'                       => 'Please select event category.',
     'error_booking_amount'                          => 'Please enter booking amount.',
+    
 
     // Messages
     'message_success'                               => 'Success',

@@ -1,5 +1,8 @@
 <?php
 /*****************************************************/
+# Company Name      :
+# Author            :
+# Created Date      : 13/01/2023
 # Page/Class name   : BackendMiddleware
 # Purpose           : Restriction for users
 /*****************************************************/
@@ -23,8 +26,6 @@ class BackendMiddleware
      */
     public function handle($request, Closure $next)
     {
-        dd('her 12');
-        
         if (\Auth::guard('admin')->user()) {
             if (isset(\Auth::guard('admin')->user()->type)) {
                 if (\Auth::guard('admin')->user()->type == 'SA') {
@@ -80,7 +81,7 @@ class BackendMiddleware
             toastr()->error(trans('custom_admin.error_please_login'), trans('custom_admin.message_error').'!');
             return redirect()->route('admin.401');
         } else {            
-            return redirect()->route('admin.login');
+            return redirect()->route('admin.auth.login');
         }
     }
 }

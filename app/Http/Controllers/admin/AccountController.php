@@ -40,6 +40,7 @@ class AccountController extends Controller
     public $editUrl         = '';
     public $viewFolderPath  = 'admin.account';
     public $model           = 'User';
+    public $as              = 'auth';
 
     /*
         * Function Name : __construct
@@ -62,8 +63,9 @@ class AccountController extends Controller
         $this->assignBreadcrumb();
 
         // Variables assign for view page
-        $this->assignShareVariables();        
+        $this->assignShareVariables();
     }
+    
 
     /*
         * Function name : dashboard
@@ -82,37 +84,17 @@ class AccountController extends Controller
         ];
 
         try {
-            $data['totalCustomers']         = User::where(['status' => '1','type' => 'C'])->whereNull(['role_id','deleted_at'])->count();
-            $data['totalAdvertisers']       = User::where(['status' => '1','type' => 'AD'])->whereNull(['role_id','deleted_at'])->count();
-            $data['totalCategories']        = Category::where(['status' => '1'])->count();
-            $data['totalEventCategories']   = EventCategory::where(['status' => '1'])->count();
-            $data['totalEvents']            = Event::where(['status' => '1'])->count();
-            $data['websiteSettings']        = $this->websiteSettingModel->first();
-            // $data['contacts']               = $contacts = Contact::select('id','created_at')->whereYear('created_at', Carbon::now()->format('Y'))->get();
-            // $data['months']                 = $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            // $contactGraph = [];
-            // if ($contacts) {
-            //     foreach ($months as $keyMonth => $valMonth) {
-            //         $count = 1;
-            //         foreach ($contacts as $key => $item) {
-            //             if ($valMonth == Carbon::parse($item->created_at)->format('F')) {
-            //                 $contactGraph[$valMonth] = $count;
-            //                 $count++;
-            //             }
-            //         }
-            //     }
-            // }
-            // $data['contactGraph'] = $contactGraph;
-
             return view($this->viewFolderPath.'.dashboard', $data);
         } catch (Exception $e) {
             Auth::guard('admin')->logout();
             $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
-            return redirect()->route($this->routePrefix.'.login');
+            
+            return to_route($this->routePrefix.'.'.$this->as.'.login');
         } catch (\Throwable $e) {
             Auth::guard('admin')->logout();
             $this->generateNotifyMessage('error', $e->getMessage(), false);
-            return redirect()->route($this->routePrefix.'.login');
+
+            return to_route($this->routePrefix.'.'.$this->as.'.login');
         }
     }
 

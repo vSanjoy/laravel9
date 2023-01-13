@@ -58,13 +58,14 @@ class AuthController extends Controller
     }
 
     /**
-     * Function name : index
-     * Purpose       : Login to dashboard
-     * Author        : 
-     * Created Date  : 12/01/2023
-     * Modified date :
-     * Return Value  : @return \Illuminate\Http\Response
-     */
+        * Function name : index
+        * Purpose       : Login to dashboard
+        * Author        : 
+        * Created Date  : 12/01/2023
+        * Modified date :
+        * Input Params  : Request $request
+        * Return Value  : @return \Illuminate\Http\Response
+    */
     public function index(Request $request) {
         $data = [
             'pageTitle'     => trans('custom_admin.label_login'),
@@ -88,7 +89,7 @@ class AuthController extends Controller
                     $validationFailedMessages = validationMessageBeautifier($validator->messages()->getMessages());                        
                     $this->generateNotifyMessage('error', $validationFailedMessages, false);
 
-                    return redirect()->route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+                    return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
                 } else {
                     $rememberMe = (!empty($request->remember_me)) ? true : false;
                     if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password, 'type' => 'SA', 'status' => '1'], $rememberMe)) {
@@ -96,21 +97,23 @@ class AuthController extends Controller
                             Auth::guard('admin')->logout();
 
                             $this->generateNotifyMessage('error', trans('custom_admin.error_permission_denied'), false);
-                            return redirect()->route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+                            return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
                         } else {
                             $user  = \Auth::guard('admin')->user();
                             $user->lastlogintime = strtotime(date('Y-m-d H:i:s'));
                             $user->save();
-                            return redirect()->route($this->routePrefix.'.dashboard');
+                            
+                            return redirect()->route($this->routePrefix.'.account.dashboard');
                         }                            
                     } else if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password, 'type' => 'A', 'status' => '1'])) {
                         $user  = \Auth::guard('admin')->user();
                         $user->lastlogintime = strtotime(date('Y-m-d H:i:s'));
                         $user->save();
-                        return redirect()->route($this->routePrefix.'.dashboard');                            
+                        
+                        return to_route($this->routePrefix.'.account.dashboard');
                     } else {
                         $this->generateNotifyMessage('error', trans('custom_admin.error_invalid_credentials_inactive_user'), false);
-                        return redirect()->route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+                        return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
                     }
                 }
             }
@@ -120,10 +123,10 @@ class AuthController extends Controller
             return view($this->viewFolderPath.'.login', $data);
         } catch (Exception $e) {
             $this->generateNotifyMessage('error', trans('custom_admin.error_invalid_credentials'), false);
-            return redirect()->route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+            return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
         } catch (\Throwable $e) {
-            $this->generateNotifyMessage('error', $e->getMessage(), false);
-            return redirect()->route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+            $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
+            return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
         }
     }
 
@@ -134,7 +137,7 @@ class AuthController extends Controller
         * Created Date  : 12/01/2023
         * Modified date :
         * Input Params  : Request $request
-        * Return Value  : 
+        * Return Value  : @return \Illuminate\Http\Response 
     */
     public function forgotPassword(Request $request) {
         $data = [

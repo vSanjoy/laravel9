@@ -45,9 +45,10 @@ Route::group(['namespace'=>'admin', 'prefix'=>'adminpanel', 'as'=>'admin.'], fun
                 Route::get('/dashboard', 'dashboard')->name('dashboard');
                 Route::get('/profile', 'profile')->name('profile');
                 Route::patch('/profile', 'profile');
-
                 Route::get('/change-password', 'changePassword')->name('change-password');
                 Route::patch('/change-password', 'change-password');
+                Route::get('/settings', 'settings')->name('settings');
+                Route::patch('/settings', 'settings');
             });
 
             

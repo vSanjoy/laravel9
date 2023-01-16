@@ -64,8 +64,7 @@ class AccountController extends Controller
 
         // Variables assign for view page
         $this->assignShareVariables();
-    }
-    
+    }    
 
     /*
         * Function name : dashboard
@@ -177,61 +176,11 @@ class AccountController extends Controller
             return view($this->viewFolderPath.'.profile', $data);
         } catch (Exception $e) {
             $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
-            return back();
+            return to_route($this->routePrefix.'.account.dashboard');
         } catch (\Throwable $e) {
             $this->generateNotifyMessage('error', $e->getMessage(), false);
-            return back();
+            return to_route($this->routePrefix.'.account.dashboard');
         }
-    }
-
-    /*
-        * Function Name : deleteUploadedImage
-        * Purpose       : This function is for delete uploaded image
-        * Author        :
-        * Created Date  :
-        * Modified date :
-        * Input Params  : Request $request
-        * Return Value  : 
-    */
-    public function deleteUploadedImage(Request $request, $id = null) {
-        $title      = trans('custom_admin.message_error');
-        $message    = trans('custom_admin.error_something_went_wrong');
-        $type       = 'error';
-
-        try {
-            if ($request->ajax()) {
-                $primaryId  = $request->primaryId ? customEncryptionDecryption($request->primaryId, 'decrypt') : null;
-                $dbField    = $request->dbField ? $request->dbField : '';
-
-                if ($primaryId != null && $dbField != '') {
-                    $details = $this->model->where('id', $primaryId)->first();
-                    if ($details != '') {
-                        $response = unlinkFiles($details->profile_pic, $this->pageRoute, true);
-                        if ($response) {
-                            $details->$dbField = null;
-                            if ($details->save()) {
-                                $title      = trans('custom_admin.message_success');
-                                $message    = trans('custom_admin.message_image_deleted_successfully');
-                                $type       = 'success';
-                            } else {
-                                $message    = trans('custom_admin.error_took_place_while_deleting');
-                            }
-                        } else {
-                            $message    = trans('custom_admin.error_took_place_while_deleting');
-                        }
-                    } else {
-                        $message = trans('custom_admin.error_invalid');
-                    }                    
-                } else {
-                    $message = trans('custom_admin.error_invalid');
-                }
-            }
-        } catch (Exception $e) {
-            $message = $e->getMessage();
-        } catch (\Throwable $e) {
-            $message = $e->getMessage();
-        }
-        return response()->json(['title' => $title, 'message' => $message, 'type' => $type]);
     }
 
     /*
@@ -306,18 +255,18 @@ class AccountController extends Controller
     }
 
     /*
-        * Function name : websiteSettings
-        * Purpose       : Website settings for whole website
+        * Function name : settings
+        * Purpose       : Settings for whole website / app
         * Author        :
         * Created Date  :
         * Modified date :
         * Input Params  : Request $request
         * Return Value  : Returns to the dashboard page
     */
-    public function websiteSettings(Request $request) {
+    public function settings(Request $request) {
         $data = [
-            'pageTitle'     => trans('custom_admin.label_website_settings'),
-            'panelTitle'    => trans('custom_admin.label_website_settings'),
+            'pageTitle'     => trans('custom_admin.label_settings'),
+            'panelTitle'    => trans('custom_admin.label_settings'),
             'pageType'      => 'LISTPAGE',
         ];
 
@@ -453,16 +402,16 @@ class AccountController extends Controller
                             $this->generateNotifyMessage('error', trans('custom_admin.error_took_place_while_updating'), false);
                         }
                     }
-                    return redirect()->back();
+                    return back();
                 }
             }
-            return view($this->viewFolderPath.'.website_settings', $data);
+            return view($this->viewFolderPath.'.account.settings', $data);
         } catch (Exception $e) {
             $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
-            return redirect()->route($this->routePrefix.'.dashboard');
+            return to_route($this->routePrefix.'.account.dashboard');
         } catch (\Throwable $e) {
             $this->generateNotifyMessage('error', $e->getMessage(), false);
-            return redirect()->route($this->routePrefix.'.website-settings');
+            return to_route($this->routePrefix.'.account.dashboard');
         }
     }
 

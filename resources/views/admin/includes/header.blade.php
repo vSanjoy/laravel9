@@ -56,9 +56,9 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="{{ route('admin.account.settings') }}">
                             <i class="bx bx-cog me-2"></i>
-                            <span class="align-middle">Settings</span>
+                            <span class="align-middle">{{ __('custom_admin.label_settings') }}</span>
                         </a>
                     </li>
                     <li>

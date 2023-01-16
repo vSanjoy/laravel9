@@ -106,7 +106,7 @@ return [
     'label_copyright_text'                          => 'Copyright Text',
     'label_tag_line'                                => 'Tag Line',
     'label_select_deselect_all'                     => 'Select / Deselect All',
-    'label_website_settings'                        => 'Website Settings',
+    'label_settings'                                => 'Setting',
     'label_first_name'                              => 'First Name',
     'label_last_name'                               => 'Last Name',
     'label_email'                                   => 'Email',

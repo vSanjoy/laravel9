@@ -2,13 +2,13 @@
 
 @section('content')
     @php
-        $email = $password = null;
-        if ($superAdminDetails) {
-            $email      = $superAdminDetails->email ?? null;
-            $password   = env('DEMO_LOGIN_PASSWORD') ?? null;
-        }
-        // Get site settings data
-        $getSiteSettings = getSiteSettings();
+    $email = $password = null;
+    if ($superAdminDetails) {
+        $email      = $superAdminDetails->email ?? null;
+        $password   = env('DEMO_LOGIN_PASSWORD') ?? null;
+    }
+    // Get site settings data
+    $getSiteSettings = getSiteSettings();
     @endphp
 
     <!-- Register -->
@@ -17,11 +17,11 @@
             <!-- Logo -->
             @include('admin.includes.logo')
             <!-- /Logo -->
-            <p class="mb-4 text-center">@lang('custom_admin.label_login_text')</p>
+            <p class="mb-4 text-center">{{ __('custom_admin.label_login_text') }}</p>
 
             @if ($superAdminDetails)
             <p class="text-center">
-                @lang('custom_admin.label_demo_login_details')<br>
+                {{ __('custom_admin.label_demo_login_details') }}<br>
                 <a class="clickToCopy" href="javascript: void(0);" data-type="email" data-values="{{ $email }}" data-microtip-position="top" role="tooltip" aria-label="{{ trans('custom_admin.label_click_to_copy') }}">
                     {{ $email }}
                 </a> / 
@@ -38,11 +38,11 @@
                 'class' => 'mb-3',
                 'route' => [$routePrefix.'.'.$as.'.login'],
                 'name'  => 'adminLoginForm',
-                'id'    => 'adminLoginForm1',
+                'id'    => 'adminLoginForm',
                 'files' => true,
                 'novalidate' => true]) }}
                 <div class="mb-3">
-                    <label for="email" class="form-label">@lang('custom_admin.label_email')<span class="red_star">*</span></label>
+                    <label for="email" class="form-label">{{ __('custom_admin.label_email') }}<span class="red_star">*</span></label>
                     {{ Form::text('email', null, array(
                                                         'id' => 'email',
                                                         'class' => 'form-control',
@@ -52,8 +52,8 @@
                 </div>
                 <div class="mb-3 form-password-toggle">
                     <div class="d-flex justify-content-between">
-                        <label class="form-label" for="password">@lang('custom_admin.label_password')<span class="red_star">*</span></label>
-                        <a href="{{ route($routePrefix.'.'.$as.'.forgot-password') }}"><small>@lang('custom_admin.message_admin_forgot_password')</small>
+                        <label class="form-label" for="password">{{ __('custom_admin.label_password') }}<span class="red_star">*</span></label>
+                        <a href="{{ route($routePrefix.'.'.$as.'.forgot-password') }}"><small>{{ __('custom_admin.message_admin_forgot_password') }}</small>
                         </a>
                     </div>
                     <div class="input-group input-group-merge" id="password_div">
@@ -68,11 +68,13 @@
                 <div class="mb-3">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="remember-me" name="remember_me">
-                        <label class="form-check-label" for="remember-me"> @lang('custom_admin.label_remember_me') </label>
+                        <label class="form-check-label" for="remember-me"> {{ __('custom_admin.label_remember_me') }} </label>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <button class="btn btn-primary d-grid w-100" type="submit">@lang('custom_admin.label_sign_in')</button>
+                    <button class="btn rounded-pill btn-primary d-grid w-100" id="btn-processing" type="submit">
+                        <i class='bx bx-log-in'></i> {{ __('custom_admin.label_sign_in') }}
+                    </button>
                 </div>
             {{ Form::close() }}
 

@@ -320,6 +320,8 @@ return [
     'label_created_by'                              => 'Created By',
     'label_booking_amount'                          => 'Booking Amount',
     'label_back_to_login'                           => 'Back to login',
+    'label_log_out'                                 => 'Log Out',
+    'label_upload_new_photo'                        => 'Upload New Photo',
     
     // Buttons
     'btn_toggle_navigation'                         => 'Toggle Navigation',
@@ -340,7 +342,7 @@ return [
     'btn_reload_gallery'                            => 'Reload Gallery',
     'btn_reloading_gallery'                         => 'Reloading Gallery',
     'btn_send_reset_link'                           => 'Send Reset Link',
-    'btn_back_to_home'                              => 'Back To Home',
+    'btn_back_to_home'                              => 'Back To Home',    
     
     // Errors
     'error_enter_email'                             => 'Please enter email.',
@@ -415,7 +417,7 @@ return [
     'error_map'                                     => 'Please enter map iframe embedded code',
     'error_phone'                                   => 'Please enter phone.',
     'error_image'                                   => 'Please upload an image.',
-    'error_image_mimes'                             => 'Please upload jpeg,jpg,png,svg image only.',
+    'error_image_mimes'                             => 'Please upload jpeg,jpg,png,svg,bmp,WebP image only.',
     'error_max_size_image'                          => 'Maximum upload size exceeded.',
     'error_question'                                => 'Please enter question.',
     'error_answer'                                  => 'Please enter answer.',
@@ -503,6 +505,12 @@ return [
     'message_password_updated_success'              => 'Your password has been updated successfully.',
     'message_welcome_to_admin_panel'                => 'Welcome To :websiteTitle Admin Panel',
     'message_gallery_note'                          => 'Note: Click on the Reload Gallery, after successful upload.',
+    'message_profile_details'                       => 'Profile Details',
+    'message_allowed_file_types'                    => 'Allowed file types :fileTypes.',
+    'message_enter_first_name'                      => 'Enter your first name',
+    'message_enter_last_name'                       => 'Enter your last name',
+    'message_enter_email'                           => 'Enter your email',
+    'message_enter_phone'                           => 'Enter your phone',
     
     // Success
     'success_data_added_successfully'               => 'Data has been added successfully.',

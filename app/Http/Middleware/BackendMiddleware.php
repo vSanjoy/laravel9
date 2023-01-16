@@ -65,7 +65,7 @@ class BackendMiddleware
                                         return response()->json(['title' => trans('custom_admin.message_error').'!', 'message' => trans('custom_admin.error_sufficient_permission'), 'type' => 'error']);
                                     } else {
                                         toastr()->error(trans('custom_admin.error_sufficient_permission'), trans('custom_admin.message_error').'!');
-                                        return \Redirect::route('admin.dashboard');
+                                        return to_route('admin.account.dashboard');
                                     }
                                 }
                             } else {
@@ -79,7 +79,7 @@ class BackendMiddleware
             }
 
             toastr()->error(trans('custom_admin.error_please_login'), trans('custom_admin.message_error').'!');
-            return redirect()->route('admin.401');
+            return to_route('admin.401');
         } else {            
             return redirect()->route('admin.auth.login');
         }

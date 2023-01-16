@@ -84,17 +84,20 @@ class AccountController extends Controller
         ];
 
         try {
+            $adminDetail        = Auth::guard('admin')->user();
+            $data['adminDetail']= $adminDetail;
+            
             return view($this->viewFolderPath.'.dashboard', $data);
         } catch (Exception $e) {
             Auth::guard('admin')->logout();
             $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
             
-            return to_route($this->routePrefix.'.'.$this->as.'.login');
+            return to_route($this->routePrefix.'.'.$this->as.'.auth.login');
         } catch (\Throwable $e) {
             Auth::guard('admin')->logout();
             $this->generateNotifyMessage('error', $e->getMessage(), false);
 
-            return to_route($this->routePrefix.'.'.$this->as.'.login');
+            return to_route($this->routePrefix.'.'.$this->as.'.auth.login');
         }
     }
 
@@ -117,8 +120,8 @@ class AccountController extends Controller
         try {
             $adminDetail        = Auth::guard('admin')->user();
             $data['adminDetail']= $adminDetail;
-
-            if ($request->isMethod('POST')) {
+            
+            if ($request->isMethod('PATCH')) {
                 $validationCondition = array(
                     'first_name'    => 'required',
                     'last_name'     => 'required',
@@ -127,8 +130,8 @@ class AccountController extends Controller
                     'profile_pic'   => 'mimes:'.config('global.IMAGE_FILE_TYPES').'|max:'.config('global.IMAGE_MAX_UPLOAD_SIZE'),
                 );
                 $validationMessages = array(
-                    'first_name.required'   => trans('custom_admin.error_enter_first_name'),
-                    'last_name.required'    => trans('custom_admin.error_enter_last_name'),
+                    'first_name.required'   => trans('custom_admin.error_first_name'),
+                    'last_name.required'    => trans('custom_admin.error_last_name'),
                     'email.required'        => trans('custom_admin.error_email'),
                     'email.regex'           => trans('custom_admin.error_valid_email'),
                     'email.unique'          => trans('custom_admin.error_email_unique'),
@@ -139,19 +142,18 @@ class AccountController extends Controller
                 if ($validator->fails()) {
                     $validationFailedMessages = validationMessageBeautifier($validator->messages()->getMessages());
                     $this->generateNotifyMessage('error', $validationFailedMessages, false);
-                    return redirect()->back()->withInput();
+                    return back()->withInput();
                 } else {
                     $profilePic         = $request->file('profile_pic');
-                    $croppedImage       = $request->cropped_image;
-                    $uploadedImage      = $adminDetail->profile_pic ?? '';
+                    $uploadedImage      = $adminDetail->profile_pic ?? null;
                     $previousFileName   = $adminDetail->profile_pic ?? null;
                     $unlinkStatus       = false;
-                    if ($profilePic != '' && $croppedImage) {
+                    if ($profilePic != '') {
                         if ($adminDetail->profile_pic != null) {
                             $previousFileName   = $adminDetail->profile_pic;
                             $unlinkStatus       = true;
                         }
-                        $uploadedImage  = singleImageUploadWithCropperTool($profilePic, $croppedImage, 'admin_user', $this->pageRoute, true, $previousFileName, $unlinkStatus);
+                        $uploadedImage  = singleImageUpload($this->modelName, $profilePic, 'account', $this->pageRoute, true, $previousFileName, $unlinkStatus);
                     }
                     $updateAdminData = array(
                         'first_name'    => $request->first_name,
@@ -165,23 +167,20 @@ class AccountController extends Controller
 
                     if ($saveAdminData) {
                         $this->generateNotifyMessage('success', trans('custom_admin.success_data_updated_successfully'), false);
-                        return redirect()->back();
+                        return back();
                     } else {
-                        // If files uploaded then delete those files
-                        unlinkFiles($uploadedImage, 'account', true);
-
                         $this->generateNotifyMessage('error', trans('custom_admin.error_took_place_while_updating'), false);
-                        return redirect()->back()->withInput();
+                        return back()->withInput();
                     }
                 }
             }
             return view($this->viewFolderPath.'.profile', $data);
         } catch (Exception $e) {
             $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
-            return redirect()->route($this->routePrefix.'.dashboard');
+            return back();
         } catch (\Throwable $e) {
             $this->generateNotifyMessage('error', $e->getMessage(), false);
-            return redirect()->route($this->routePrefix.'.dashboard');
+            return back();
         }
     }
 

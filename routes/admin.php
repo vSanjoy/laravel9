@@ -34,20 +34,36 @@ Route::group(['namespace'=>'admin', 'prefix'=>'adminpanel', 'as'=>'admin.'], fun
 
         // Route::get('/', 'login')->name('login');
     });
-    
+
+       
     
 
 
     Route::group(['middleware' => 'backend'], function () {
-        Route::any('/dashboard', ['as'=>'account.dashboard', 'uses' => 'AccountController@dashboard']);
+        Route::controller(AccountController::class)->group(function() {
+            Route::name('account.')->group(function () {
+                Route::get('/dashboard', 'dashboard')->name('dashboard');
+                Route::get('/profile', 'profile')->name('profile');
+                Route::patch('/profile', 'profile');
+
+                Route::get('/change-password', 'changePassword')->name('change-password');
+                Route::patch('/change-password', 'change-password');
+            });
+
+            
+            
+        });
+        
+        Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+        
         
 
         
-        Route::any('/profile', 'AccountController@profile')->name('profile');
-        Route::post('/account/delete-uploaded-image', 'AccountController@deleteUploadedImage')->name('delete-uploaded-image');
-        Route::any('/change-password', 'AccountController@changePassword')->name('change-password');
-        Route::any('/generate-slug', 'AccountController@generateSlug')->name('generate-slug');
-        Route::any('/logout', 'AuthController@logout')->name('logout');
+        // Route::any('/profile', 'AccountController@profile')->name('profile');
+        // Route::post('/account/delete-uploaded-image', 'AccountController@deleteUploadedImage')->name('delete-uploaded-image');
+        // Route::any('/change-password', 'AccountController@changePassword')->name('change-password');
+        // Route::any('/generate-slug', 'AccountController@generateSlug')->name('generate-slug');
+        
 
         
     });

@@ -16,7 +16,7 @@ function imagePreview(input, imagePreviewId) {
 					$('#image_holder_'+imagePreviewId).html('<img id="image_preview" class="mt-2" style="display: none;" />');
 					$('#'+imagePreviewId+'_preview + div').remove();
 
-					$('#'+imagePreviewId+'_preview').after('<div class="image-preview-holder" id="image_holder_'+imagePreviewId+'"><img src="'+e.target.result+'" class="image-preview-border" width="180" height="110"/><span class="delete-preview-image" data-cid="'+imagePreviewId+'"><i class="fa fa-trash"></i></span></div>');
+					$('#'+imagePreviewId+'_preview').after('<div class="image-preview-holder upload_image_position_absolute" id="image_holder_'+imagePreviewId+'"><img src="'+e.target.result+'" class="d-block rounded image-preview-border" width="100" height="100"/><span class="delete-preview-image upload_image_delete_position_absolute" data-cid="'+imagePreviewId+'"><i class="bx bx-x-circle"></i></span></div>');
 				};
 				reader.readAsDataURL(input.files[0]);
 			} else {

@@ -73,60 +73,64 @@ class AuthController extends Controller
             'pageType'      => ''
         ];
 
-        try {
-            if ($request->isMethod('POST')) {
-                $validationCondition = array(
-                    'email'     => 'required|regex:'.config('global.EMAIL_REGEX'),
-                    'password'  => 'required',
-                );
-                $validationMessages = array(
-                    'email.required'    => trans('custom_admin.error_enter_email'),
-                    'email.regex'       => trans('custom_admin.error_enter_valid_email'),
-                    'password.required' => trans('custom_admin.error_enter_password'),
-                );
-                $validator = \Validator::make($request->all(), $validationCondition, $validationMessages);
-                if ($validator->fails()) {
-                    $validationFailedMessages = validationMessageBeautifier($validator->messages()->getMessages());                        
-                    $this->generateNotifyMessage('error', $validationFailedMessages, false);
+        if (Auth::guard('admin')->check()) {
+        	return redirect()->route($this->routePrefix.'.account.dashboard');
+        } else {
+            try {
+                if ($request->isMethod('POST')) {
+                    $validationCondition = array(
+                        'email'     => 'required|regex:'.config('global.EMAIL_REGEX'),
+                        'password'  => 'required',
+                    );
+                    $validationMessages = array(
+                        'email.required'    => trans('custom_admin.error_enter_email'),
+                        'email.regex'       => trans('custom_admin.error_enter_valid_email'),
+                        'password.required' => trans('custom_admin.error_enter_password'),
+                    );
+                    $validator = \Validator::make($request->all(), $validationCondition, $validationMessages);
+                    if ($validator->fails()) {
+                        $validationFailedMessages = validationMessageBeautifier($validator->messages()->getMessages());                        
+                        $this->generateNotifyMessage('error', $validationFailedMessages, false);
 
-                    return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
-                } else {
-                    $rememberMe = (!empty($request->remember_me)) ? true : false;
-                    if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password, 'type' => 'SA', 'status' => '1'], $rememberMe)) {
-                        if (Auth::guard('admin')->user()->checkRolePermission == null) {
-                            Auth::guard('admin')->logout();
+                        return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+                    } else {
+                        $rememberMe = (!empty($request->remember_me)) ? true : false;
+                        if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password, 'type' => 'SA', 'status' => '1'], $rememberMe)) {
+                            if (Auth::guard('admin')->user()->checkRolePermission == null) {
+                                Auth::guard('admin')->logout();
 
-                            $this->generateNotifyMessage('error', trans('custom_admin.error_permission_denied'), false);
-                            return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
-                        } else {
+                                $this->generateNotifyMessage('error', trans('custom_admin.error_permission_denied'), false);
+                                return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+                            } else {
+                                $user  = \Auth::guard('admin')->user();
+                                $user->lastlogintime = strtotime(date('Y-m-d H:i:s'));
+                                $user->save();
+                                
+                                return redirect()->route($this->routePrefix.'.account.dashboard');
+                            }                            
+                        } else if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password, 'type' => 'A', 'status' => '1'])) {
                             $user  = \Auth::guard('admin')->user();
                             $user->lastlogintime = strtotime(date('Y-m-d H:i:s'));
                             $user->save();
                             
-                            return redirect()->route($this->routePrefix.'.account.dashboard');
-                        }                            
-                    } else if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password, 'type' => 'A', 'status' => '1'])) {
-                        $user  = \Auth::guard('admin')->user();
-                        $user->lastlogintime = strtotime(date('Y-m-d H:i:s'));
-                        $user->save();
-                        
-                        return to_route($this->routePrefix.'.account.dashboard');
-                    } else {
-                        $this->generateNotifyMessage('error', trans('custom_admin.error_invalid_credentials_inactive_user'), false);
-                        return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+                            return to_route($this->routePrefix.'.account.dashboard');
+                        } else {
+                            $this->generateNotifyMessage('error', trans('custom_admin.error_invalid_credentials_inactive_user'), false);
+                            return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+                        }
                     }
                 }
-            }
-            $data['superAdminDetails'] = User::where(['id' => '1', 'type' => 'SA', 'sample_login_show' => 'Y'])->first();
+                $data['superAdminDetails'] = User::where(['id' => '1', 'type' => 'SA', 'sample_login_show' => 'Y'])->first();
 
-            // If admin is not logged in, show the login form //
-            return view($this->viewFolderPath.'.login', $data);
-        } catch (Exception $e) {
-            $this->generateNotifyMessage('error', trans('custom_admin.error_invalid_credentials'), false);
-            return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
-        } catch (\Throwable $e) {
-            $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
-            return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+                // If admin is not logged in, show the login form //
+                return view($this->viewFolderPath.'.login', $data);
+            } catch (Exception $e) {
+                $this->generateNotifyMessage('error', trans('custom_admin.error_invalid_credentials'), false);
+                return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+            } catch (\Throwable $e) {
+                $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
+                return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+            }
         }
     }
 
@@ -162,7 +166,7 @@ class AuthController extends Controller
                     if ($validator->fails()) {
                         $validationFailedMessages = validationMessageBeautifier($validator->messages()->getMessages());
                         $this->generateNotifyMessage('error', $validationFailedMessages, false);
-                        return redirect()->back()->withInput();
+                        return to_route($this->routePrefix.'.'.$this->as.'.forgot-password')->withInput();
                     } else {
                         $user = $this->model->where(['email' => $request->email, 'status' => '1'])->first();
                         if ($user != null) {
@@ -182,25 +186,25 @@ class AuthController extends Controller
                                         $m->to($user->email, $user->full_name)->subject(trans('custom_admin.label_reset_password_link').' - '.$siteSetting->website_title);
                                     });
                                     $this->generateNotifyMessage('success', trans('custom_admin.message_reset_password_text'), false);
-                                    return redirect()->route($this->routePrefix.'.'.$this->as.'.forgot-password');
+                                    return to_route($this->routePrefix.'.'.$this->as.'.forgot-password');
                                 }
                             } else {
                                 $this->generateNotifyMessage('error', trans('custom_admin.error_sufficient_permission'), false);
-                                return redirect()->route($this->routePrefix.'.'.$this->as.'.forgot-password')->withInput();
+                                return to_route($this->routePrefix.'.'.$this->as.'.forgot-password')->withInput();
                             }
                         } else {
                             $this->generateNotifyMessage('error', trans('custom_admin.error_not_registered_with_us'), false);
-                            return redirect()->route($this->routePrefix.'.'.$this->as.'.forgot-password')->withInput();
+                            return to_route($this->routePrefix.'.'.$this->as.'.forgot-password')->withInput();
                         }
                     }
                 }
                 return view($this->viewFolderPath.'.forgot_password', $data);
             } catch (Exception $e) {
                 $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
-                return redirect()->route($this->routePrefix.'.'.$this->as.'.forgot-password')->withInput();
+                return to_route($this->routePrefix.'.'.$this->as.'.forgot-password')->withInput();
             } catch (\Throwable $e) {
                 $this->generateNotifyMessage('error', $e->getMessage(), false);
-                return redirect()->route($this->routePrefix.'.'.$this->as.'.forgot-password')->withInput();
+                return to_route($this->routePrefix.'.'.$this->as.'.forgot-password')->withInput();
             }
         }
     }
@@ -236,6 +240,30 @@ class AuthController extends Controller
         }
     }
 
-
+    /*
+        * Function name : logout
+        * Purpose       : Logout from dashboard
+        * Author        :
+        * Created Date  :
+        * Modified date :
+        * Input Params  : Request $request
+        * Return Value  : 
+    */
+    public function logout() {
+        try {
+            if (Auth::guard('admin')->logout()) {
+                return to_route($this->routePrefix.'.'.$this->as.'.auth.login');
+            } else {
+                return to_route($this->routePrefix.'.'.$this->as.'.account.dashboard');
+            }
+        } catch (Exception $e) {
+            $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
+            return back()->withInput();
+            return to_route($this->routePrefix.'.'.$this->as.'.account.dashboard');
+        } catch (\Throwable $e) {
+            $this->generateNotifyMessage('error', $e->getMessage(), false);
+            return back()->withInput();
+        }
+    }
     
 }

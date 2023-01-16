@@ -1,6 +1,14 @@
 .red_star {color: #D32929; padding-left: 1px;}
 .toast {opacity: 1 !important; font-size: 14px;}
 .toast-close-button i.fa-times {text-shadow: 0 1px 0 #000; font-size: 12px;}
+#btn-processing {display: inline-block !important;}
+.float-left{float: left;}
+.float-right{float: right;}
+.position_relative{position: relative;}
+.upload_image_position_absolute{position: absolute; left: 0; top: 0;}
+.upload_image_delete_position_absolute{position: absolute; right: 5px; top: 5px; cursor: pointer; color: #ff0000;}
+
+
 
 /*******************
 Preloader

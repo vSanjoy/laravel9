@@ -38,11 +38,11 @@ var warningMessage      = 'Warning';
 var infoMessage         = 'Info';
 var btnSubmitting       = 'Submitting...';
 var btnUpdating         = 'Updating...';
-var btnSubmitPreloader  = '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Submitting...';
-var btnUpdatePreloader  = '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Updating...';
-var btnSavingPreloader  = '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Saving...';
-var btnLoadingPreloader = '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Loading...';
-var btnSendingPreloader = '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Sending...';
+var btnSubmitPreloader  = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
+var btnUpdatePreloader  = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...';
+var btnSavingPreloader  = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+var btnLoadingPreloader = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+var btnSendingPreloader = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
 
 $.validator.addMethod("valid_email", function(value, element) {
     if (/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(value)) {
@@ -203,7 +203,7 @@ $(document).ready(function() {
         },
         submitHandler: function(form) {
             $('#btn-processing').html(btnLoadingPreloader);
-            $('.preloader').show();
+            $('#btn-processing').attr('disabled', true);
             form.submit();
         }
     });
@@ -247,7 +247,7 @@ $(document).ready(function() {
         },
         submitHandler: function(form) {
             $('#btn-processing').html(btnSendingPreloader);
-            $('.preloader').show();
+            $('#btn-processing').attr('disabled', true);
             form.submit();
         }
     });
@@ -301,7 +301,7 @@ $(document).ready(function() {
         },
         submitHandler: function(form) {
             $('#btn-processing').html(btnSavingPreloader);
-            $('.preloader').show();
+            $('#btn-processing').attr('disabled', true);
             form.submit();
         }
     });
@@ -362,8 +362,8 @@ $(document).ready(function() {
             error.insertAfter(element);
         },
         submitHandler: function(form) {
-            $('#btn-processing').html(btnSavingPreloader);
-            $('.preloader').show();
+            $('#btn-processing').html(btnUpdatePreloader);
+            $('#btn-processing').attr('disabled', true);
             form.submit();
         }
     });

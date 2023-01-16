@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" />
     <!-- Icons. Uncomment required icon fonts -->
     <link rel="stylesheet" href="{{ asset('css/admin/vendor/fonts/boxicons.css') }}" />
+    <!-- Font Awesome -->
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" /> --}}
 
     <!-- Core CSS -->
     <link rel="stylesheet" href="{{ asset('css/admin/vendor/css/core.css') }}" class="template-customizer-core-css" />
@@ -90,8 +92,7 @@
         <!-- Overlay -->
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
-    <!-- / Layout wrapper -->
-    
+    <!-- / Layout wrapper -->    
 
     {{-- <!-- ============================================================== -->
     <!-- Main wrapper - style you can find in pages.scss -->

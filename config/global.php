@@ -24,6 +24,7 @@ return [
     'IMAGE_CONTAINER'                   => 300,                                     // Image container for cropping
     'THUMB_IMAGE_WIDTH'                 => [
                                             'Category'          => 100,              // Category,Testimonial ... => This name should be same as Model name
+                                            'Account'           => 100,
                                             'User'              => 215,
                                             'SubAdmin'          => 215,
                                             'Event'             => 373,
@@ -32,6 +33,7 @@ return [
                                         ],
     'THUMB_IMAGE_HEIGHT'                => [
                                             'Category'          => 100,
+                                            'Account'           => 100,
                                             'User'              => 215,
                                             'SubAdmin'          => 215,
                                             'Event'             => 328,

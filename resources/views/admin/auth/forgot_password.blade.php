@@ -24,16 +24,16 @@
                 {{ Form::text('email', null, [
                     'id' => 'email',
                     'class' => 'form-control',
-                    'placeholder' => 'Enter your email',
+                    'placeholder' => __('custom_admin.message_enter_email'),
                     'required' => true,
                 ]) }}
             </div>
-            <button class="btn btn-primary d-grid w-100">@lang('custom_admin.btn_send_reset_link')</button>
+            <button class="btn rounded-pill btn-primary d-grid w-100" id="btn-processing"><i class='bx bxs-paper-plane'></i> @lang('custom_admin.btn_send_reset_link')</button>
             {{ Form::close() }}
             
             <div class="text-center">
-                <a href="{{ route($routePrefix . '.' . $as . '.login') }}" class="d-flex align-items-center justify-content-center">
-                    <i class="bx bx-chevron-left scaleX-n1-rtl bx-sm"></i>
+                <a href="{{ route($routePrefix.'.'.$as.'.login') }}" class="d-flex align-items-center justify-content-center">
+                    <i class='bx bx-chevron-left'></i>
                     @lang('custom_admin.label_back_to_login')
                 </a>
             </div>

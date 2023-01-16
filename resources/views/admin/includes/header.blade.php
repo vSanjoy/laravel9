@@ -6,13 +6,20 @@
         </a>
     </div>
 
+    @php
+    $image = asset("images/admin/avatars/1.png");
+    if (Auth::guard('admin')->user()->profile_pic == null && file_exists(public_path('images/uploads/account/thumbs/'.Auth::guard('admin')->user()->profile_pic))) :
+        $image = asset("images/uploads/account/thumbs/".Auth::guard('admin')->user()->profile_pic);
+    endif;
+    @endphp
+
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- User -->
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                        <img src="{{ asset('images/admin/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
+                        <img src="{{ $image }}" alt class="w-px-40 rounded-circle" />
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -21,11 +28,11 @@
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar avatar-online">
-                                        <img src="{{ asset('images/admin/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle" />
+                                        <img src="{{ $image }}" alt class="w-px-40 rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <span class="fw-semibold d-block">John Doe</span>
+                                    <span class="fw-semibold d-block">{{  Auth::guard('admin')->user()->full_name }}</span>
                                     <small class="text-muted">Admin</small>
                                 </div>
                             </div>
@@ -35,9 +42,17 @@
                         <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="{{ route('admin.account.profile') }}">
                             <i class="bx bx-user me-2"></i>
-                            <span class="align-middle">My Profile</span>
+                            <span class="align-middle">{{ __('custom_admin.label_profile') }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('admin.account.change-password') }}">
+                            <span class="d-flex align-items-center align-middle">
+                                <i class='bx bxs-lock-alt me-2'></i>
+                                <span class="flex-grow-1 align-middle">{{ __('custom_admin.label_change_password') }}</span>
+                            </span>
                         </a>
                     </li>
                     <li>
@@ -47,22 +62,12 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">
-                            <span class="d-flex align-items-center align-middle">
-                                <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                                <span class="flex-grow-1 align-middle">Billing</span>
-                                <span
-                                    class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                            </span>
-                        </a>
-                    </li>
-                    <li>
                         <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="auth-login-basic.html">
+                        <a class="dropdown-item" href="{{ route('admin.auth.logout') }}">
                             <i class="bx bx-power-off me-2"></i>
-                            <span class="align-middle">Log Out</span>
+                            <span class="align-middle">{{ __('custom_admin.label_log_out') }}</span>
                         </a>
                     </li>
                 </ul>

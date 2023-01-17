@@ -19,6 +19,7 @@
                 'files' => true,
                 'novalidate' => true,
             ]) }}
+            @method('PATCH')
             <div class="mb-3">
                 <label for="email" class="form-label">@lang('custom_admin.label_email')<span class="red_star">*</span></label>
                 {{ Form::text('email', null, [

@@ -2,7 +2,7 @@
 /*****************************************************/
 # Company Name      :
 # Author            :
-# Created Date      :
+# Created Date      : 16/01/2023
 # Page/Class name   : AccountController
 # Purpose           : Admin Account Management
 /*****************************************************/
@@ -47,7 +47,7 @@ class AccountController extends Controller
         * Purpose       : It sets some public variables for being accessed throughout this
         *                   controller and its related view pages
         * Author        :
-        * Created Date  :
+        * Created Date  : 16/01/2023
         * Modified date :
         * Input Params  : Void
         * Return Value  : Mixed
@@ -70,7 +70,7 @@ class AccountController extends Controller
         * Function name : dashboard
         * Purpose       : After login admin will see dashboard page
         * Author        :
-        * Created Date  :
+        * Created Date  : 16/01/2023
         * Modified date :
         * Input Params  : 
         * Return Value  : Returns to the dashboard page
@@ -104,7 +104,7 @@ class AccountController extends Controller
         * Function Name : profile
         * Purpose       : This function is for update profile
         * Author        :
-        * Created Date  :
+        * Created Date  : 16/01/2023
         * Modified date :
         * Input Params  : Request $request
         * Return Value  : 
@@ -187,7 +187,7 @@ class AccountController extends Controller
         * Function Name : changePassword
         * Purpose       : This function is for change password
         * Author        :
-        * Created Date  :
+        * Created Date  : 16/01/2023
         * Modified date :
         * Input Params  : Request $request
         * Return Value  : 
@@ -200,7 +200,7 @@ class AccountController extends Controller
         ];
 
         try {
-            if ($request->isMethod('POST')) {
+            if ($request->isMethod('PATCH')) {
                 $validationCondition = array(
                     'current_password'  => 'required',
                     'password'          => 'required|regex:'.config('global.PASSWORD_REGEX'),
@@ -218,10 +218,9 @@ class AccountController extends Controller
                 if ($validator->fails()) {
                     $validationFailedMessages = validationMessageBeautifier($validator->messages()->getMessages());
                     $this->generateNotifyMessage('error', $validationFailedMessages, false);
-                    return redirect()->back()->withInput();
+                    return back()->withInput();
                 } else {
                     $adminDetail    = Auth::guard('admin')->user();
-                    $user_id        = Auth::guard('admin')->user()->id;
                     $hashedPassword = $adminDetail->password;
 
                     // check if current password matches with the saved password
@@ -233,24 +232,24 @@ class AccountController extends Controller
                         if ($updatePassword) {
                             $this->generateNotifyMessage('success', trans('custom_admin.success_data_updated_successfully')." ".trans('custom_admin.success_for_security_reason_logged_out'), false);
                             Auth::guard('admin')->logout();
-                            return redirect()->route($this->routePrefix.'.login');
+                            return to_route($this->routePrefix.'.auth.login');
                         } else {
                             $this->generateNotifyMessage('error', trans('custom_admin.error_took_place_while_updating'), false);
-                            return redirect()->back();
+                            return back()->withInput();
                         }
                     } else {
                         $this->generateNotifyMessage('error', trans('custom_admin.error_current_password'), false);
-                        return redirect()->back();
+                        return back()->withInput();
                     }
                 }
             }
             return view($this->viewFolderPath.'.change_password', $data);
         } catch (Exception $e) {
             $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
-            return redirect()->route($this->routePrefix.'.dashboard');
+            return to_route($this->routePrefix.'.account.dashboard');
         } catch (\Throwable $e) {
             $this->generateNotifyMessage('error', $e->getMessage(), false);
-            return redirect()->route($this->routePrefix.'.dashboard');
+            return to_route($this->routePrefix.'.account.dashboard');
         }
     }
 

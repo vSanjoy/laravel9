@@ -8,7 +8,7 @@
 
     @php
     $image = asset("images/admin/avatars/1.png");
-    if (Auth::guard('admin')->user()->profile_pic == null && file_exists(public_path('images/uploads/account/thumbs/'.Auth::guard('admin')->user()->profile_pic))) :
+    if (Auth::guard('admin')->user()->profile_pic != null && file_exists(public_path('images/uploads/account/thumbs/'.Auth::guard('admin')->user()->profile_pic))) :
         $image = asset("images/uploads/account/thumbs/".Auth::guard('admin')->user()->profile_pic);
     endif;
     @endphp
@@ -24,7 +24,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="javascript:void(0);">
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar avatar-online">
@@ -32,8 +32,8 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <span class="fw-semibold d-block">{{  Auth::guard('admin')->user()->full_name }}</span>
-                                    <small class="text-muted">Admin</small>
+                                    <span class="fw-semibold d-block">{{ Auth::guard('admin')->user()->full_name }}</span>
+                                    <small class="text-muted">{{ getAdminType(Auth::guard('admin')->user()->type) }}</small>
                                 </div>
                             </div>
                         </a>

@@ -41,14 +41,16 @@
                 'id'    => 'adminLoginForm',
                 'files' => true,
                 'novalidate' => true]) }}
+                @method('PATCH')
                 <div class="mb-3">
                     <label for="email" class="form-label">{{ __('custom_admin.label_email') }}<span class="red_star">*</span></label>
-                    {{ Form::text('email', null, array(
-                                                        'id' => 'email',
-                                                        'class' => 'form-control',
-                                                        'placeholder' => '',
-                                                        'required' => 'required',
-                                                        'placeholder' => 'Enter your email' )) }}
+                    {{ Form::text('email', null, [
+                                                'id' => 'email',
+                                                'class' => 'form-control',
+                                                'placeholder' => '',
+                                                'required' => 'required',
+                                                'placeholder' => 'Enter your email'
+                                                ]) }}
                 </div>
                 <div class="mb-3 form-password-toggle">
                     <div class="d-flex justify-content-between">
@@ -57,11 +59,12 @@
                         </a>
                     </div>
                     <div class="input-group input-group-merge" id="password_div">
-                        {{ Form::password('password', array(
-                                                            'id' => 'password',
-                                                            'class' => 'form-control',
-                                                            'placeholder' => '&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;',
-                                                            'required' => 'required' )) }}
+                        {{ Form::password('password', [
+                                                        'id' => 'password',
+                                                        'class' => 'form-control',
+                                                        'placeholder' => '&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;',
+                                                        'required' => true
+                                                    ]) }}
                         <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                     </div>
                 </div>

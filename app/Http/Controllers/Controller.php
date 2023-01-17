@@ -50,7 +50,7 @@ class Controller extends BaseController
                 notyf()
                     ->position('x', 'right')
                     ->position('y', 'top')
-                    ->duration(2000)
+                    ->duration(3000)
                     ->ripple(true)
                     ->dismissible(true)
                     ->addSuccess($validationFailedMessages);
@@ -59,7 +59,7 @@ class Controller extends BaseController
                 notyf()
                     ->position('x', 'right')
                     ->position('y', 'top')
-                    ->duration(2000)
+                    ->duration(3000)
                     ->ripple(true)
                     ->dismissible(true)
                     ->addWarning($validationFailedMessages);
@@ -68,7 +68,7 @@ class Controller extends BaseController
                 notyf()
                     ->position('x', 'right')
                     ->position('y', 'top')
-                    ->duration(2000)
+                    ->duration(3000)
                     ->ripple(true)
                     ->dismissible(true)
                     ->addError($validationFailedMessages);
@@ -77,7 +77,7 @@ class Controller extends BaseController
                 notyf()
                     ->position('x', 'right')
                     ->position('y', 'top')
-                    ->duration(2000)
+                    ->duration(3000)
                     ->ripple(true)
                     ->dismissible(true)
                     ->addInfo($validationFailedMessages);

@@ -3,6 +3,10 @@
 @section('content')
 
     <div class="container-xxl flex-grow-1 container-p-y">
+        <!-- Breadcrumb -->
+		@include('admin.includes.breadcrumb')
+		<!-- / Breadcrumb -->
+        
         <div class="row">
             <div class="col-md-12">
                 {{ Form::open([
@@ -83,7 +87,7 @@
                                 </div>
                             </div>
                             <div class="mt-2">
-                                <a class="btn rounded-pill btn-secondary btn-buy-now text-white" id="btn-cancel" href="{{ route($routePrefix.'.account.dashboard') }}"><i class='bx bx-left-arrow-circle'></i> {{ __('custom_admin.btn_cancel') }}</a>
+                                <a class="btn rounded-pill btn-secondary text-white" id="btn-cancel" href="{{ route($routePrefix.'.account.dashboard') }}"><i class='bx bx-left-arrow-circle'></i> {{ __('custom_admin.btn_cancel') }}</a>
                                 <button type="submit" class="btn rounded-pill btn-primary float-right" id="btn-updating"><i class='bx bx-save'></i> {{ __('custom_admin.btn_update') }}</button>
                             </div>
                         </div>
@@ -97,5 +101,5 @@
 @endsection
 
 @push('scripts')
-@include($routePrefix.'.includes.image_preview')
+    @include($routePrefix.'.includes.image_preview')
 @endpush

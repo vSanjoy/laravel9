@@ -58,7 +58,7 @@ class AuthController extends Controller
     }
 
     /**
-        * Function name : index
+        * Function name : login
         * Purpose       : Login to dashboard
         * Author        : 
         * Created Date  : 12/01/2023
@@ -66,7 +66,7 @@ class AuthController extends Controller
         * Input Params  : Request $request
         * Return Value  : @return \Illuminate\Http\Response
     */
-    public function index(Request $request) {
+    public function login(Request $request) {
         $data = [
             'pageTitle'     => trans('custom_admin.label_login'),
             'panelTitle'    => trans('custom_admin.label_login'),
@@ -77,7 +77,7 @@ class AuthController extends Controller
         	return redirect()->route($this->routePrefix.'.account.dashboard');
         } else {
             try {
-                if ($request->isMethod('POST')) {
+                if ($request->isMethod('PATCH')) {
                     $validationCondition = array(
                         'email'     => 'required|regex:'.config('global.EMAIL_REGEX'),
                         'password'  => 'required',
@@ -154,7 +154,7 @@ class AuthController extends Controller
             return redirect()->route('admin.dashboard');
         } else {
             try {
-                if ($request->isMethod('POST')) {
+                if ($request->isMethod('PATCH')) {
                     $validationCondition = array(
                         'email'     => 'required|regex:'.config('global.EMAIL_REGEX'),
                     );

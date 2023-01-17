@@ -136,7 +136,8 @@ $(document).ready(function() {
     // Password checker
     $('.password-checker').on('keyup', function () {
         var getVal = $(this).val();
-        var dataAttrId = $(this).data('pcid');        
+        var dataAttrId = $(this).data('pcid');
+        
         if (getVal != '') {
             if (/^[a-zA-Z_\-]+$/.test(getVal)) {  // weak
                 $('#'+dataAttrId).html('<div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%"></div>');
@@ -420,11 +421,20 @@ $(document).ready(function() {
             toastr.error(overallErrorMessage, errorMessage+'!');
         },
         errorPlacement: function(error, element) {
-            error.insertAfter(element);
+            if ($(element).attr('id') == 'current_password') {
+                error.insertAfter($(element).parents('div#current_password_div'));
+            } else if ($(element).attr('id') == 'password') {
+                error.insertAfter($(element).parents('div#password_div'));
+            } else if ($(element).attr('id') == 'confirm_password') {
+                error.insertAfter($(element).parents('div#confirm_password_div'));
+            } else {
+                error.insertAfter(element);
+            }
         },
         submitHandler: function(form) {
-            $('#btn-processing').html(btnSavingPreloader);
-            $('.preloader').show();
+            $('#btn-updating').html(btnUpdatingPreloader);
+            $('#btn-updating').attr('disabled', true);
+            $('#btn-cancel').addClass('pointer-none');
             form.submit();
         }
     });

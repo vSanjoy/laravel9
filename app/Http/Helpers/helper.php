@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use App\Models\Cms;
 use App\Models\User;
 use App\Models\WebsiteSetting;
-use App\Models\Order;
 
 /*
     * Function name : getAppName
@@ -17,7 +16,7 @@ use App\Models\Order;
     * Return Value  : 
 */
 function getAppName() {
-    return 'Made In The Six';
+    return 'Forex County';
 }
 
 /*
@@ -284,51 +283,6 @@ function singleImageUpload($modelName, $originalImage, $imageName, $uploadedFold
 }
 
 /*
-    * Function name : singleImageUploadWithCropperTool
-    * Purpose       : This function is for image upload with cropper tool
-    * Input Params  : $originalImage, $croppedImage = base64 format,  $imageName,
-    *                   $uploadedFolder, $thumbImage = false, $previousFileName = null, $unlinkStatus = false
-    * Return Value  : Uploaded file name
-*/
-function singleImageUploadWithCropperTool($originalImage, $croppedImage, $imageName, $uploadedFolder, $thumbImage = false, $previousFileName = null, $unlinkStatus = false) {
-    $originalFileName   = $originalImage->getClientOriginalName();
-    $extension          = pathinfo($originalFileName, PATHINFO_EXTENSION);
-    $fileName           = $imageName.'_'.strtotime(date('Y-m-d H:i:s')).'.'.$extension;
-    $imageResize        = Image::make($originalImage->getRealPath());
-
-    // Checking if folder already existed and if not create a new folder
-    $directoryPath      = public_path('images/uploads/'.$uploadedFolder);
-    $thumbDirectoryPath = public_path('images/uploads/'.$uploadedFolder.'/thumbs');
-    if (!File::isDirectory($directoryPath)) {
-        File::makeDirectory($directoryPath);    // make the directory because it doesn't exists
-    }
-    $imageResize->save($directoryPath.'/'.$fileName);
-
-    if ($thumbImage) {
-        if (!File::isDirectory($thumbDirectoryPath)) {
-            File::makeDirectory($thumbDirectoryPath);    // make the Thumbs directory because it doesn't exists
-        }
-
-        // Cropped file upload
-        $base64DecodedImage = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $croppedImage));
-        $uploadedPath       = $thumbDirectoryPath.'/'.$fileName;
-        file_put_contents($uploadedPath, $base64DecodedImage);
-    }
-    
-    if ($unlinkStatus && $previousFileName != null) {
-        if (file_exists($directoryPath.'/'.$previousFileName)) {
-            $largeImagePath = $directoryPath.'/'.$previousFileName;
-            @unlink($largeImagePath);
-            if ($thumbImage) {
-                $thumbImagePath = $thumbDirectoryPath.'/'.$previousFileName;
-                @unlink($thumbImagePath);
-            }
-        }
-    }
-    return $fileName;
-}
-
-/*
     * Function name : gallerySingleImageUpload
     * Purpose       : This function is for image upload
     * Input Params  : $modelName, $originalImage, $imageName, $uploadedFolder, $albumId, $thumbImage = false,
@@ -523,165 +477,6 @@ function getSiteSettingsWithSelectFields($selectedFields) {
 }
 
 /*
-    * Function name : generateSlots
-    * Purpose       : This function is to return slots
-    * Author        :
-    * Created Date  :
-    * Modified Date : 
-    * Input Params  : Void
-    * Return Value  : Array
-*/
-function generateSlots($requestedBookingDate = null, $serviceProviderId = 0) {
-    $todaysDate = Carbon::now()->format('Y-m-d');
-    if ($requestedBookingDate == null) {
-        $currentDate = Carbon::now()->format('Y-m-d');
-        $today       = date('l');
-    } else {
-        $currentDate = $requestedBookingDate;
-        $today       = date('l', strtotime($requestedBookingDate));
-    }
-    
-    $sameDateStatus = false;
-    if ($todaysDate == $currentDate) {
-        $sameDateStatus = true;
-    }
-    $slots = [];
-
-    $shopOpenCloseTimeAccordingToDay = Slot::where('title->'.\App::getLocale(),'like','%'.$today.'%')->where('service_provider_id', $serviceProviderId)->first();
-    
-    // If not closed
-    if ($shopOpenCloseTimeAccordingToDay->is_closed == 'N') {
-        $currentTimeStamp   = strtotime(date('H:i'));
-        $deliveryStartTime  = $currentTimeStamp;
-        
-        // Shop open and close time
-        $shopOpenTime       = date('H:i', strtotime($shopOpenCloseTimeAccordingToDay->start_time));
-        $shopCloseTime      = strtotime($shopOpenCloseTimeAccordingToDay->end_time);
-
-        // Shop open Hour & minute
-        $shopOpenTimeInHour     = date('H', strtotime($shopOpenCloseTimeAccordingToDay->start_time));
-        $shopOpenTimeInMinute   = date('i', strtotime($shopOpenCloseTimeAccordingToDay->start_time));
-        
-        $remainder = $shopOpenTimeInMinute % 15;
-        
-        $remainingFromMinute = $shopOpenTimeInMinute - $remainder;
-        
-        if ($remainingFromMinute / 15 == 0) {
-            $slotStartTime = strtotime($shopOpenTimeInHour.':15');
-        }
-        else if ($remainingFromMinute / 15 == 1) {
-            $slotStartTime = strtotime($shopOpenTimeInHour.':30');
-        }
-        else if ($remainingFromMinute / 15 == 2) {
-            $slotStartTime = strtotime($shopOpenTimeInHour.':45');
-        }
-        else if ($remainingFromMinute / 15 == 3) {
-            $slotStartTime = strtotime(($shopOpenTimeInHour+1).':00');
-        }
-
-        // slot break up
-        if ($slotStartTime < $shopCloseTime) {
-            // start
-            $firstSlotStartTime = $shopOpenCloseTimeAccordingToDay->start_time;
-            if ($slotStartTime > strtotime($firstSlotStartTime)) {
-                $slotStartTime = strtotime($firstSlotStartTime);
-            }
-            // end
-
-            for ($slotStartTime; $slotStartTime <= $shopCloseTime;) {
-                if ($sameDateStatus) {
-                    if ($slotStartTime > $deliveryStartTime) {
-                        $slots[] = date('H:i', $slotStartTime);
-                    }
-                } else {
-                    $slots[] = date('H:i', $slotStartTime);
-                }
-                $slotStartTime = strtotime("+15 minutes", $slotStartTime);
-            }
-        }
-        // start
-        if (count($slots)) {
-            if ($sameDateStatus) {
-                if (strtotime($slots[count($slots)-1]) != $shopCloseTime && $deliveryStartTime <= $shopCloseTime) {
-                    $slots[] = date('H:i',$shopCloseTime);
-                }
-            } else {
-                if (strtotime($slots[count($slots)-1]) != $shopCloseTime) {
-                    $slots[] = date('H:i',$shopCloseTime);
-                }
-            }
-        }
-        // end
-
-        // If slot 2 exist START
-        if ($shopOpenCloseTimeAccordingToDay->start_time2 != null && $shopOpenCloseTimeAccordingToDay->end_time2 != null) {
-            // Shop open and close time
-            $shopOpenTime2      = date('H:i', strtotime($shopOpenCloseTimeAccordingToDay->start_time2));
-            $shopCloseTime2     = strtotime($shopOpenCloseTimeAccordingToDay->end_time2);
-
-            // Shop open Hour & minute
-            $shopOpenTimeInHour2     = date('H', strtotime($shopOpenCloseTimeAccordingToDay->start_time2));
-            $shopOpenTimeInMinute2   = date('i', strtotime($shopOpenCloseTimeAccordingToDay->start_time2));
-            
-            $remainder2 = $shopOpenTimeInMinute2 % 15;
-            
-            $remainingFromMinute2 = $shopOpenTimeInMinute2 - $remainder2;            
-
-            if ($remainingFromMinute2 / 15 == 0) {
-                $slotStartTime2 = strtotime($shopOpenTimeInHour2.':15');
-            }
-            else if ($remainingFromMinute2 / 15 == 1) {
-                $slotStartTime2 = strtotime($shopOpenTimeInHour2.':30');
-            }
-            else if ($remainingFromMinute2 / 15 == 2) {
-                $slotStartTime2 = strtotime($shopOpenTimeInHour2.':45');
-            }
-            else if ($remainingFromMinute2 / 15 == 3) {
-                $slotStartTime2 = strtotime(($shopOpenTimeInHour2+1).':00');
-            }
-
-            // slot break up
-            if ($slotStartTime2 < $shopCloseTime2) {
-                // start
-                $secondSlotStartTime = $shopOpenCloseTimeAccordingToDay->start_time2;
-                if ($slotStartTime2 > strtotime($secondSlotStartTime)) {
-                    $slotStartTime2 = strtotime($secondSlotStartTime);
-                }
-                // end
-
-                for ($slotStartTime2; $slotStartTime2 <= $shopCloseTime2;) {
-                    if ($sameDateStatus) {
-                        if ($slotStartTime2 > $deliveryStartTime) {
-                            $slots[] = date('H:i', $slotStartTime2);
-                        }
-                    } else {
-                        $slots[] = date('H:i', $slotStartTime2);
-                    }
-                    $slotStartTime2 = strtotime("+15 minutes", $slotStartTime2);
-                }
-            }
-
-            // start
-            if (count($slots)) {
-                if ($sameDateStatus) {
-                    if (strtotime($slots[count($slots)-1]) != $shopCloseTime2 && $deliveryStartTime <= $shopCloseTime2) {
-                        $slots[] = date('H:i',$shopCloseTime2);
-                    }
-                } else {
-                    if (strtotime($slots[count($slots)-1]) != $shopCloseTime2) {
-                        $slots[] = date('H:i',$shopCloseTime2);
-                    }
-                }
-            }
-            // end
-        }
-        // If slot 2 exist END
-    }
-    
-    return $slots;
-}
-
-/*
     * Function name : formatToTwoDecimalPlaces
     * Purpose       : This function is to return price 2 decimal places
     * Author        :
@@ -735,7 +530,7 @@ function priceRoundOff(float $price) {
 function generateUniqueId() {
     $timeNow        = date("his");
     $randNumber     = strtoupper(substr(sha1(time()), 0, 4));
-    return $unique  = 'CR' . $timeNow . $randNumber;
+    return $unique  = 'FC' . $timeNow . $randNumber;
 }
 
 /*
@@ -797,142 +592,6 @@ function hoursAndMins($time, $format = '%01d.%01d') {
         }
     }   
 }
-
-/*
-    * Function name : getCartItemDetails
-    * Purpose       : This function return cart array
-    * Author        :
-    * Created Date  :
-    * Modified Date : 
-    * Input Params  : 
-    * Return Value  : 
-*/
-function getCartItemDetails() {
-    $cartSessionId = '';
-    if (Session::get('cartSessionId') != '') {
-        $cartSessionId = Session::get('cartSessionId');
-    }
-
-    $cartUserId = $totalCartCount = $totalCartAmount = $cartId = $uniqueId = 0;
-    $getCartData = $cartArray = [];
-    if (Auth::user()) {
-        $cartUserId = Auth::user()->id;
-        $cartConditions = ['user_id' => $cartUserId, 'type' => 'C'];
-    } else {
-        $cartConditions = ['session_id' => $cartSessionId];
-    }
-    // Getting cart details
-    $getCartData = Cart::where($cartConditions)->first();
-    if ($getCartData != null) {
-        $cartId         = $getCartData->id;
-        $uniqueId       = $getCartData->unique_id;
-        // Main Cart array
-        if (isset($getCartData->cartDetails) && $getCartData->cartDetails->count() > 0) {
-            $i = 0;
-            foreach ($getCartData->cartDetails as $cartDetails) {
-                $productImage = asset('images/'.config('global.NO_IMAGE'));
-                if ($cartDetails->productDetails->defaultImage != null) {
-                    if (file_exists(public_path('/images/uploads/gallery/product/'.$cartDetails->productDetails->defaultImage->image))) {
-                        $productImage = asset('/images/uploads/gallery/product/'.$cartDetails->productDetails->defaultImage->image);
-                    }
-                }
-                $productDetails = json_decode($cartDetails->product_details, true);
-                $cartArray[$i]['id']                = $cartDetails->id;
-                $cartArray[$i]['cart_id']           = $cartDetails->cart_id;
-                $cartArray[$i]['product_id']        = $cartDetails->product_id;
-                $cartArray[$i]['quantity']          = $cartDetails->quantity;
-                $cartArray[$i]['unit_price']        = $cartDetails->unit_price;
-                $cartArray[$i]['unit_total_price']  = $cartDetails->unit_total_price;
-                $cartArray[$i]['total_price']       = $cartDetails->total_price;
-                $cartArray[$i]['product_title']     = $productDetails['title'];
-                $cartArray[$i]['product_image']     = $productImage;
-                
-                // Total price
-                $totalCartAmount    += $cartDetails->total_price;
-                $totalCartCount     += $cartDetails->quantity;
-                $i++;
-            }
-        }
-    }
-    $cartDetailArray = array(
-                        'cartId'            => $cartId,
-                        'uniqueId'          => $uniqueId,
-                        'itemDetails'       => $cartArray,
-                        'totalItems'        => $totalCartCount,
-                        'totalCartAmount'   => (float)formatToTwoDecimalPlaces($totalCartAmount),
-                        'payableAmount'     => (float)formatToTwoDecimalPlaces($totalCartAmount)
-                    );
-    // dd($cartDetailArray);
-    return $cartDetailArray;
-}
-
-/*
-    * Function name : getOrderDetails
-    * Purpose       : This function return order array
-    * Author        :
-    * Created Date  :
-    * Modified Date : 
-    * Input Params  : 
-    * Return Value  : 
-*/
-function getOrderDetails($orderId = null, $userId = null) {
-    $totalOrderCount = $totalOrderAmount = $paidAmount = $discountAmount = $uniqueId = 0;
-    $getOrderData = $orderArray = $mainOrder = [];
-    $couponCode = null;
-
-    if ($orderId != null && $userId != null) {
-        $getOrderData   = Order::where(['id' => $orderId, 'user_id' => $userId])->first();
-        $mainOrder      = $getOrderData->toArray();
-        if ($getOrderData != null) {
-            $orderId        = $getOrderData->id;
-            $uniqueId       = $getOrderData->unique_id;
-            $paidAmount     = $getOrderData->final_amount;
-            $discountAmount = $getOrderData->discount_amount;
-            $couponCode     = $getOrderData->coupon_code;
-            // Main Order array
-            if (isset($getOrderData->orderDetails) && $getOrderData->orderDetails->count() > 0) {
-                $i = 0;
-                foreach ($getOrderData->orderDetails as $orderDetails) {
-                    $productImage = asset('images/'.config('global.NO_IMAGE'));
-                    if ($orderDetails->productDetails->defaultImage != null) {
-                        if (file_exists(public_path('/images/uploads/gallery/product/'.$orderDetails->productDetails->defaultImage->image))) {
-                            $productImage = asset('/images/uploads/gallery/product/'.$orderDetails->productDetails->defaultImage->image);
-                        }
-                    }
-                    $productDetails = json_decode($orderDetails->product_details, true);
-                    $orderArray[$i]['id']                = $orderDetails->id;
-                    $orderArray[$i]['order_id']          = $orderDetails->order_id;
-                    $orderArray[$i]['product_id']        = $orderDetails->product_id;
-                    $orderArray[$i]['quantity']          = $orderDetails->quantity;
-                    $orderArray[$i]['unit_price']        = $orderDetails->unit_price;
-                    $orderArray[$i]['unit_total_price']  = $orderDetails->unit_total_price;
-                    $orderArray[$i]['total_price']       = $orderDetails->total_price;
-                    $orderArray[$i]['product_title']     = $productDetails['title'];
-                    $orderArray[$i]['product_image']     = $productImage;
-                    
-                    // Total price
-                    $totalOrderAmount    += $orderDetails->total_price;
-                    $totalOrderCount     += $orderDetails->quantity;
-                    $i++;
-                }
-            }
-        }
-    }
-
-    $orderDetailArray = array(
-        'orderId'           => $orderId,
-        'uniqueId'          => $uniqueId,
-        'mainOrder'         => $mainOrder,
-        'itemDetails'       => $orderArray,
-        'totalItems'        => $totalOrderCount,
-        'totalOrderAmount'  => (float)formatToTwoDecimalPlaces($totalOrderAmount),
-        'discountAmount'    => (float)formatToTwoDecimalPlaces($discountAmount),
-        'paidAmount'        => (float)formatToTwoDecimalPlaces($paidAmount),
-    );
-
-    return $orderDetailArray;
-}
-
 
 
 /******************************************************** API SECTION ********************************************************/
@@ -1053,48 +712,6 @@ function getFunctionNameFromRequestUrl() {
 }
 
 /*
-    * Function name : categoryList
-    * Purpose       : This function is category list
-    * Author        :
-    * Created Date  :
-    * Modified Date : 
-    * Input Params  : 
-    * Return Value  : 
-*/
-function categoryList() {
-    $categoryList   = Category::select('id','title')->where(['status' => '1'])->whereNull('deleted_at')->get();
-    return $categoryList;
-}
-
-/*
-    * Function name : vendorList
-    * Purpose       : This function is vendor / user list
-    * Author        :
-    * Created Date  :
-    * Modified Date : 
-    * Input Params  : 
-    * Return Value  : 
-*/
-function vendorList() {
-    $vendorList   = User::select('id','full_name', 'email')->where('id','<>','1')->where(['type' => 'V'])->whereNull('deleted_at')->orderBy('id', 'desc')->get();
-    return $vendorList;
-}
-
-/*
-    * Function name : locationList
-    * Purpose       : This function is location list
-    * Author        :
-    * Created Date  :
-    * Modified Date : 
-    * Input Params  : 
-    * Return Value  : 
-*/
-function locationList() {
-    $locationList   = Location::select('id','location')->where(['status' => '1'])->whereNull('deleted_at')->orderBy('sort', 'asc')->get();
-    return $locationList;
-}
-
-/*
     * Function name : toSetAndGetLocale
     * Purpose       : This function is get and set language
     * Author        :
@@ -1198,4 +815,32 @@ function generateVerificationCode() {
     $shuffledStringOfNumbers    = str_shuffle($stringOfNumbers);
     $verificationCode           = substr($shuffledStringOfNumbers, 1, 4);
     return $verificationCode;
+}
+
+/*
+    * Function Name : getAdminType
+    * Purpose       : This function is to return admin type
+    * Author        :
+    * Created Date  :
+    * Modified date :
+    * Input Params  : $type
+    * Return Value  : Mixed
+*/
+function getAdminType($type) {
+    switch($type) {
+        case 'SA':
+            return 'Super Admin';
+            break;
+        case 'A':
+            return 'Sub Admin';
+            break;
+        case 'U':
+            return 'User';
+            break;
+        case 'AG':
+            return 'Agent';
+            break;
+        default:
+            return 'Customer';
+    }
 }

@@ -29,8 +29,16 @@ Route::group(['namespace'=>'admin', 'prefix'=>'adminpanel', 'as'=>'admin.'], fun
     // Route::get('books/{id}',['as'=>'books.view','uses'=>'BOOKController@view']);
     
     Route::controller(AuthController::class)->group(function() {
-        Route::any('/', ['as'=>'auth.login', 'uses'=>'index']);
-        Route::any('/forgot-password', ['as'=>'auth.forgot-password', 'uses' => 'forgotPassword']);
+        Route::name('auth.')->group(function () {
+            Route::get('/', 'login')->name('login');
+            Route::patch('/', 'login')->name('login');
+            Route::get('/forgot-password', 'forgotPassword')->name('forgot-password');
+            Route::patch('/forgot-password', 'forgotPassword')->name('forgot-password');
+        });
+
+
+        // Route::any('/', ['as'=>'auth.login', 'uses'=>'index']);
+        // Route::any('/forgot-password', ['as'=>'auth.forgot-password', 'uses' => 'forgotPassword']);
 
         // Route::get('/', 'login')->name('login');
     });
@@ -46,7 +54,7 @@ Route::group(['namespace'=>'admin', 'prefix'=>'adminpanel', 'as'=>'admin.'], fun
                 Route::get('/profile', 'profile')->name('profile');
                 Route::patch('/profile', 'profile');
                 Route::get('/change-password', 'changePassword')->name('change-password');
-                Route::patch('/change-password', 'change-password');
+                Route::patch('/change-password', 'changePassword');
                 Route::get('/settings', 'settings')->name('settings');
                 Route::patch('/settings', 'settings');
             });
@@ -55,16 +63,7 @@ Route::group(['namespace'=>'admin', 'prefix'=>'adminpanel', 'as'=>'admin.'], fun
             
         });
         
-        Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
-        
-        
-
-        
-        // Route::any('/profile', 'AccountController@profile')->name('profile');
-        // Route::post('/account/delete-uploaded-image', 'AccountController@deleteUploadedImage')->name('delete-uploaded-image');
-        // Route::any('/change-password', 'AccountController@changePassword')->name('change-password');
-        // Route::any('/generate-slug', 'AccountController@generateSlug')->name('generate-slug');
-        
+        Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');      
 
         
     });

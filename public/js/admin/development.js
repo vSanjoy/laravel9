@@ -39,7 +39,7 @@ var infoMessage         = 'Info';
 var btnSubmitting       = 'Submitting...';
 var btnUpdating         = 'Updating...';
 var btnSubmitPreloader  = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
-var btnUpdatePreloader  = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...';
+var btnUpdatingPreloader = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...';
 var btnSavingPreloader  = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
 var btnLoadingPreloader = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
 var btnSendingPreloader = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
@@ -362,8 +362,9 @@ $(document).ready(function() {
             error.insertAfter(element);
         },
         submitHandler: function(form) {
-            $('#btn-processing').html(btnUpdatePreloader);
-            $('#btn-processing').attr('disabled', true);
+            $('#btn-updating').html(btnUpdatingPreloader);
+            $('#btn-updating').attr('disabled', true);
+            $('#btn-cancel').addClass('pointer-none');
             form.submit();
         }
     });
@@ -984,7 +985,7 @@ $(document).ready(function() {
     // End :: Role Form //
 
     // Start :: Site Settings Form //
-    $("#updateWebsiteSettingsForm").validate({
+    $("#updateSettingsForm").validate({
         ignore: [],
         debug: false,
         rules: {
@@ -1032,8 +1033,9 @@ $(document).ready(function() {
             error.insertAfter(element);
         },
         submitHandler: function(form) {
-            $('#btn-processing').html(btnSavingPreloader);
-            $('.preloader').show();
+            $('#btn-updating').html(btnUpdatingPreloader);
+            $('#btn-updating').attr('disabled', true);
+            $('#btn-cancel').addClass('pointer-none');
             form.submit();
         }
     });

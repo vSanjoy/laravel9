@@ -106,7 +106,7 @@ class AuthController extends Controller
                                 $user->lastlogintime = strtotime(date('Y-m-d H:i:s'));
                                 $user->save();
                                 
-                                return redirect()->route($this->routePrefix.'.account.dashboard');
+                                return to_route($this->routePrefix.'.account.dashboard');
                             }                            
                         } else if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password, 'type' => 'A', 'status' => '1'])) {
                             $user  = \Auth::guard('admin')->user();
@@ -126,10 +126,10 @@ class AuthController extends Controller
                 return view($this->viewFolderPath.'.login', $data);
             } catch (Exception $e) {
                 $this->generateNotifyMessage('error', trans('custom_admin.error_invalid_credentials'), false);
-                return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+                return to_route($this->routePrefix.'.'.$this->as.'.login');
             } catch (\Throwable $e) {
                 $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
-                return to_route($this->routePrefix.'.'.$this->as.'.login')->withInput();
+                return to_route($this->routePrefix.'.'.$this->as.'.login');
             }
         }
     }
@@ -233,10 +233,10 @@ class AuthController extends Controller
             return view($this->viewFolderPath.'.401', $data);
         } catch (Exception $e) {
             $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
-            return redirect()->route($this->routePrefix.'.login')->withInput();
+            return to_route($this->routePrefix.'.'.$this->as.'.login');
         } catch (\Throwable $e) {
             $this->generateNotifyMessage('error', $e->getMessage(), false);
-            return redirect()->route($this->routePrefix.'.login')->withInput();
+            return to_route($this->routePrefix.'.'.$this->as.'.login');
         }
     }
 
@@ -252,17 +252,16 @@ class AuthController extends Controller
     public function logout() {
         try {
             if (Auth::guard('admin')->logout()) {
-                return to_route($this->routePrefix.'.'.$this->as.'.auth.login');
+                return to_route($this->routePrefix.'.'.$this->as.'.login');
             } else {
-                return to_route($this->routePrefix.'.'.$this->as.'.account.dashboard');
+                return to_route($this->routePrefix.'.account.dashboard');
             }
         } catch (Exception $e) {
             $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
-            return back()->withInput();
-            return to_route($this->routePrefix.'.'.$this->as.'.account.dashboard');
+            return to_route($this->routePrefix.'.account.dashboard');
         } catch (\Throwable $e) {
             $this->generateNotifyMessage('error', $e->getMessage(), false);
-            return back()->withInput();
+            return to_route($this->routePrefix.'.account.dashboard');
         }
     }
     

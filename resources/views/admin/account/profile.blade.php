@@ -81,11 +81,10 @@
                                                                 'placeholder' => __('custom_admin.message_enter_phone'),
                                                                 'required' => true )) }}
                                 </div>
-                                
                             </div>
                             <div class="mt-2">
-                                <button type="submit" class="btn rounded-pill btn-primary float-right" id="btn-processing"><i class='bx bx-save'></i> {{ __('custom_admin.btn_update') }}</button>
-                                <button type="reset" class="btn rounded-pill btn-secondary"><i class='bx bx-left-arrow-circle'></i> {{ __('custom_admin.btn_cancel') }}</button>
+                                <a class="btn rounded-pill btn-secondary btn-buy-now text-white" id="btn-cancel" href="{{ route($routePrefix.'.account.dashboard') }}"><i class='bx bx-left-arrow-circle'></i> {{ __('custom_admin.btn_cancel') }}</a>
+                                <button type="submit" class="btn rounded-pill btn-primary float-right" id="btn-updating"><i class='bx bx-save'></i> {{ __('custom_admin.btn_update') }}</button>
                             </div>
                         </div>
                         <!-- /Account -->

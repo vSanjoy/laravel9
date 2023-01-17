@@ -5,8 +5,10 @@
 .float-left{float: left;}
 .float-right{float: right;}
 .position_relative{position: relative;}
-.upload_image_position_absolute{position: absolute; left: 0; top: 0;}
+.upload_image_position_absolute{position: absolute; left: 0; top: 0; background-color: #ffffff;}
 .upload_image_delete_position_absolute{position: absolute; right: 5px; top: 5px; cursor: pointer; color: #ff0000;}
+.text-white{color: #ffffff;}
+.pointer-none{pointer-events: none;}
 
 
 

@@ -273,13 +273,12 @@ class AccountController extends Controller
         try {
             $data['websiteSettings'] = $websiteSettings = $this->websiteSettingModel->first();
 
-            if ($request->isMethod('POST')) {
+            if ($request->isMethod('PATCH')) {
                 $validationCondition = array(
                     'from_email'    => 'required|regex:'.config('global.EMAIL_REGEX'),
                     'to_email'      => 'required|regex:'.config('global.EMAIL_REGEX'),
                     'website_title' => 'required',
-                    'logo'          => 'mimes:'.config('global.IMAGE_FILE_TYPES').'|max:'.config('global.IMAGE_MAX_UPLOAD_SIZE'),
-                    'footer_logo'   => 'mimes:'.config('global.IMAGE_FILE_TYPES').'|max:'.config('global.IMAGE_MAX_UPLOAD_SIZE'),
+                    'logo'          => 'mimes:'.config('global.IMAGE_FILE_TYPES').'|max:'.config('global.IMAGE_MAX_UPLOAD_SIZE')
                 );
                 $validationMessages = array(
                     'from_email.required'       => trans('custom_admin.error_from_email'),
@@ -288,28 +287,21 @@ class AccountController extends Controller
                     'to_email.regex'            => trans('custom_admin.error_valid_email'),
                     'website_title.required'    => trans('custom_admin.error_website_title'),
                     'logo.mimes'                => trans('custom_admin.error_image_mimes'),
-                    'footer_logo.mimes'         => trans('custom_admin.error_image_mimes'),
                 );
                 $validator = \Validator::make($request->all(), $validationCondition, $validationMessages);
                 if ($validator->fails()) {
                     $validationFailedMessages = validationMessageBeautifier($validator->messages()->getMessages());
                     $this->generateNotifyMessage('error', $validationFailedMessages, false);
-                    return redirect()->back()->withInput();
+                    return back()->withInput();
                 } else {
                     if ($websiteSettings == null) {
                         $saveData       = [];
                         $logo           = $request->file('logo');
-                        $footerLogo     = $request->file('footer_logo');
-                        $uploadedLogo   = $uploadedFooterLogo = '';
+                        $uploadedLogo   = '';
                         // Logo upload
                         if ($logo != '') {
-                            $uploadedLogo               = singleImageUpload('WebsiteSetting', $logo, 'logo', $this->pageRoute, false);
-                            $saveData['logo']           = $uploadedLogo;
-                        }
-                        // Footer logo upload
-                        if ($footerLogo != '') {
-                            $uploadedFooterLogo         = singleImageUpload('WebsiteSetting', $footerLogo, 'footer_logo', $this->pageRoute, false);
-                            $saveData['footer_logo']    = $uploadedFooterLogo;
+                            $uploadedLogo       = singleImageUpload('WebsiteSetting', $logo, 'logo', $this->pageRoute, false);
+                            $saveData['logo']   = $uploadedLogo;
                         }
                         $saveData['from_email']                 = $request->from_email ?? null;
                         $saveData['to_email']                   = $request->to_email ?? null;
@@ -325,14 +317,11 @@ class AccountController extends Controller
                         $saveData['rss_link']                   = $request->rss_link ?? null;
                         $saveData['dribble_link']               = $request->dribble_link ?? null;
                         $saveData['tumblr_link']                = $request->tumblr_link ?? null;
-                        $saveData['map']                        = $request->map ?? null;
                         $saveData['website_title']              = $request->website_title ?? null;
                         $saveData['default_meta_title']         = $request->default_meta_title ?? null;
                         $saveData['default_meta_keywords']      = $request->default_meta_title ?? null;
                         $saveData['default_meta_description']   = $request->default_meta_description ?? null;
                         $saveData['address']                    = $request->address ?? null;
-                        $saveData['footer_address']             = $request->footer_address ?? null;
-                        $saveData['copyright_text']             = $request->copyright_text ?? null;
                         $saveData['tag_line']                   = $request->tag_line ?? null;
                         
                         $save = $this->websiteSettingModel->create($saveData);
@@ -345,10 +334,9 @@ class AccountController extends Controller
                     } else {
                         $updateData     = [];
                         $logo           = $request->file('logo');
-                        $footerLogo     = $request->file('footer_logo');
-                        $uploadedLogo   = $uploadedFooterLogo = '';
-                        $previousLogo   = $previousFooterLogo = null;
-                        $unlinkLogoStatus= $unlinkFooterLogoStatus = false;
+                        $uploadedLogo   = '';
+                        $previousLogo   = null;
+                        $unlinkLogoStatus= false;
                         // Logo upload
                         if ($logo != '') {
                             if ($websiteSettings['logo'] != null) {
@@ -357,15 +345,6 @@ class AccountController extends Controller
                             }
                             $uploadedLogo               = singleImageUpload('WebsiteSetting', $logo, 'logo', $this->pageRoute, false, $previousLogo, $unlinkLogoStatus);
                             $updateData['logo']         = $uploadedLogo;
-                        }
-                        // Footer logo upload
-                        if ($footerLogo != '') {
-                            if ($websiteSettings['footer_logo'] != null) {
-                                $previousFooterLogo     = $websiteSettings['footer_logo'];
-                                $unlinkFooterLogoStatus = true;
-                            }
-                            $uploadedFooterLogo         = singleImageUpload('WebsiteSetting', $footerLogo, 'footer_logo', $this->pageRoute, false, $previousFooterLogo, $unlinkFooterLogoStatus);
-                            $updateData['footer_logo']  = $uploadedFooterLogo;
                         }
                         $updateData['from_email']               = $request->from_email ?? null;
                         $updateData['to_email']                 = $request->to_email ?? null;
@@ -381,19 +360,13 @@ class AccountController extends Controller
                         $updateData['rss_link']                 = $request->rss_link ?? null;
                         $updateData['dribble_link']             = $request->dribble_link ?? null;
                         $updateData['tumblr_link']              = $request->tumblr_link ?? null;
-                        $updateData['map']                      = $request->map ?? null;
                         $updateData['website_title']            = $request->website_title ?? null;
                         $updateData['default_meta_title']       = $request->default_meta_title ?? null;
                         $updateData['default_meta_keywords']    = $request->default_meta_title ?? null;
                         $updateData['default_meta_description'] = $request->default_meta_description ?? null;
                         $updateData['address']                  = $request->address ?? null;
-                        $updateData['footer_address']           = $request->footer_address ?? null;
-                        $updateData['copyright_text']           = $request->copyright_text ?? null;
                         $updateData['tag_line']                 = $request->tag_line ?? null;
 
-                        foreach ($this->websiteLanguages as $langKey => $langVal) {
-                            
-                        }
                         $update = $websiteSettings->update($updateData);
 
                         if ($update) {
@@ -402,10 +375,10 @@ class AccountController extends Controller
                             $this->generateNotifyMessage('error', trans('custom_admin.error_took_place_while_updating'), false);
                         }
                     }
-                    return back();
+                    return to_route($this->routePrefix.'.account.settings');
                 }
             }
-            return view($this->viewFolderPath.'.account.settings', $data);
+            return view($this->viewFolderPath.'.settings', $data);
         } catch (Exception $e) {
             $this->generateNotifyMessage('error', trans('custom_admin.error_something_went_wrong'), false);
             return to_route($this->routePrefix.'.account.dashboard');

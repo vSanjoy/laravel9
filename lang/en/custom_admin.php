@@ -319,9 +319,10 @@ return [
     'label_total_events'                            => 'Total Events',
     'label_created_by'                              => 'Created By',
     'label_booking_amount'                          => 'Booking Amount',
-    'label_back_to_login'                           => 'Back to login',
+    'label_back_to_login'                           => 'Back To Login',
     'label_log_out'                                 => 'Log Out',
     'label_upload_new_photo'                        => 'Upload New Photo',
+    'label_upload_logo'                             => 'Upload Logo',
     
     // Buttons
     'btn_toggle_navigation'                         => 'Toggle Navigation',
@@ -342,7 +343,31 @@ return [
     'btn_reload_gallery'                            => 'Reload Gallery',
     'btn_reloading_gallery'                         => 'Reloading Gallery',
     'btn_send_reset_link'                           => 'Send Reset Link',
-    'btn_back_to_home'                              => 'Back To Home',    
+    'btn_back_to_home'                              => 'Back To Home',
+    
+    // Placeholders
+    'placeholder_from_email'                        => 'Enter from email',
+    'placeholder_to_email'                          => 'Enter to email',
+    'placeholder_phone_number'                      => 'Enter phone number',
+    'placeholder_fax'                               => 'Enter fax',
+    'placeholder_facebook_link'                     => 'Enter facebook link',
+    'placeholder_twitter_link'                      => 'Enter twitter link',
+    'placeholder_instagram_link'                    => 'Enter instagram link',
+    'placeholder_linkedin_link'                     => 'Enter linkedin link',
+    'placeholder_pinterest_link'                    => 'Enter pinterest link',
+    'placeholder_googleplus_link'                   => 'Enter gplus link',
+    'placeholder_youtube_link'                      => 'Enter youtube link',
+    'placeholder_rss_link'                          => 'Enter rss link',
+    'placeholder_dribble_link'                      => 'Enter dribble link',
+    'placeholder_tumblr_link'                       => 'Enter tumblr link',
+    'placeholder_website_title'                     => 'Enter website title',
+    'placeholder_tag_line'                          => 'Enter tag line',
+    'placeholder_default_meta_title'                => 'Enter default meta title',
+    'placeholder_default_meta_keywords'             => 'Enter default meta keywords',
+    'placeholder_default_meta_description'          => 'Enter default meta description',
+    'placeholder_address'                           => 'Enter address',
+
+
     
     // Errors
     'error_enter_email'                             => 'Please enter email.',

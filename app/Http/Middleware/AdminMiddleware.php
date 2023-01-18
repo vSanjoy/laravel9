@@ -51,9 +51,8 @@ class AdminMiddleware
                         if (strpos($currentRouteName,'change-status') !== false || strpos($currentRouteName,'delete') !== false) {
                             return response()->json(['title' => trans('custom_admin.message_error').'!', 'message' => trans('custom_admin.error_sufficient_permission'), 'type' => 'error']);
                         } else {
-                            // $request->session()->flash('alert-danger', trans('custom_admin.error_sufficient_permission'));
                             toastr()->error(trans('custom_admin.error_sufficient_permission'), trans('custom_admin.message_error').'!');
-                            return redirect()->route('admin.401');
+                            return to_route('admin.401');
                         }
                     }
                 } else {
@@ -63,7 +62,7 @@ class AdminMiddleware
                 return $next($request);
             }
         } else {
-            return redirect()->route('admin.login');
+            return to_route('admin.auth.login');
         }
 
     }

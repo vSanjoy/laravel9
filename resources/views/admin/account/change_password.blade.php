@@ -49,8 +49,8 @@
 										<span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
 									</div>
 								</div>
-								<div class="progress" id="new-password-checker">
-									<div class="progress" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+								<div class="progress" id="new-password-checker" style="height: 6px;">
+									<div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
 								</div>
                             </div>
 							<div class="col-md-6">

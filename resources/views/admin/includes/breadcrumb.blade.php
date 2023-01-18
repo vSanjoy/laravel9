@@ -7,7 +7,9 @@
         @if (isset($breadcrumb[$pageType]) && count($breadcrumb[$pageType]) > 0)
             @foreach ($breadcrumb[$pageType] as $pageValue)
                 @if ($pageValue['url'] != '')
-                    <a href="{{ $pageValue['url'] }}" class="">{{ $pageValue['label'] }}</a> / 
+                    <span class="text-muted fw-light">
+                        <a href="{{ $pageValue['url'] }}" class="">{{ $pageValue['label'] }}</a> / 
+                    </span>
                 @else
                     {{ $pageValue['label'] }}
                 @endif

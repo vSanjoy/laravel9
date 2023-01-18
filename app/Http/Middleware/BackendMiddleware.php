@@ -81,7 +81,7 @@ class BackendMiddleware
             toastr()->error(trans('custom_admin.error_please_login'), trans('custom_admin.message_error').'!');
             return to_route('admin.401');
         } else {            
-            return redirect()->route('admin.auth.login');
+            return to_route('admin.auth.login');
         }
     }
 }

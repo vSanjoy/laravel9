@@ -152,7 +152,7 @@ $(document).ready(function() {
                 $('#'+dataAttrId).html('<div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>');
             }
         } else {
-            $('#'+dataAttrId).html('<div class="progress" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>');
+            $('#'+dataAttrId).html('<div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>');
         }
     });
 

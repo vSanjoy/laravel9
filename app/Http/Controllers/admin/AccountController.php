@@ -187,7 +187,7 @@ class AccountController extends Controller
         * Function Name : changePassword
         * Purpose       : This function is for change password
         * Author        :
-        * Created Date  : 16/01/2023
+        * Created Date  : 17/01/2023
         * Modified date :
         * Input Params  : Request $request
         * Return Value  : 
@@ -257,7 +257,7 @@ class AccountController extends Controller
         * Function name : settings
         * Purpose       : Settings for whole website / app
         * Author        :
-        * Created Date  :
+        * Created Date  : 17/01/2023
         * Modified date :
         * Input Params  : Request $request
         * Return Value  : Returns to the dashboard page
@@ -385,48 +385,6 @@ class AccountController extends Controller
             $this->generateNotifyMessage('error', $e->getMessage(), false);
             return to_route($this->routePrefix.'.account.dashboard');
         }
-    }
-
-    /*
-        * Function Name : generateSlug
-        * Purpose       : This function is to generate unique slug
-        * Author        :
-        * Created Date  :
-        * Modified date :
-        * Input Params  : Request $request
-        * Return Value  : Mixed
-    */
-    public function generateSlug(Request $request) {
-        $title      = trans('custom_admin.message_error');
-        $message    = trans('custom_admin.error_something_went_wrong');
-        $type       = 'error';
-        $slug       = '';
-
-        try {
-            if ($request->ajax()) {
-                $modelName  = $request->modelName ? $request->modelName : '';
-                $title      = $request->title ? trim($request->title) : '';
-                $id         = $request->id ? $request->id : null;
-
-                if ($modelName != '' && $title != '') {
-                    if ($modelName == 'Category') {
-                        $modelName = new Category();
-                    } else if ($modelName == 'Cms') {
-                        $modelName = new Cms();
-                    }  
-                    $slug = generateUniqueSlug($modelName, $title, $id);    // This is defined in helper
-                    $type = 'success';
-                    $message    = trans('custom_admin.message_success');
-                } else {
-                    $message    = trans('custom_admin.error_something_went_wrong');
-                }
-            }
-        } catch (Exception $e) {
-            $message = $e->getMessage();
-        } catch (\Throwable $e) {
-            $message = $e->getMessage();
-        }
-        return response()->json(['title' => $title, 'message' => $message, 'type' => $type, 'slug' => $slug]);
     }
     
 }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 // Admin Controllers
 use App\Http\Controllers\admin\AuthController;
 use App\Http\Controllers\admin\AccountController;
+use App\Http\Controllers\admin\CmsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,12 +59,22 @@ Route::group(['namespace'=>'admin', 'prefix'=>'adminpanel', 'as'=>'admin.'], fun
                 Route::get('/settings', 'settings')->name('settings');
                 Route::patch('/settings', 'settings');
             });
-
-            
-            
         });
         
-        Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');      
+        Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+        
+        Route::group(['middleware' => 'admin'], function () {
+            Route::controller(CmsController::class)->group(function() {
+
+
+                Route::prefix('cms')->name('cms.')->group(function () {
+                    Route::get('/list', 'list')->name('list');
+                    Route::get('/add', 'add')->name('add');
+                    Route::post('/add', 'add');
+                    
+                });
+            });
+        });
 
         
     });

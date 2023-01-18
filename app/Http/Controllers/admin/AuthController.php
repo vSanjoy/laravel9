@@ -244,7 +244,7 @@ class AuthController extends Controller
         * Function name : logout
         * Purpose       : Logout from dashboard
         * Author        :
-        * Created Date  :
+        * Created Date  : 16/01/2023
         * Modified date :
         * Input Params  : Request $request
         * Return Value  : 
